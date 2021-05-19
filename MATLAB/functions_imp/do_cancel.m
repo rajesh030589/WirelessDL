@@ -1,5 +1,5 @@
 function [e_iter, Cancel] = do_cancel(X,Y,type)
-iter = 5e5;
+iter = 3e5;
 x = X;
 y = acorr(X,Y);
 switch(type)

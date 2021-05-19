@@ -109,25 +109,27 @@ def OFDM_Symb(N, NFFT, Data):
     return B
 
 
-# Parameters
-N = 100
-NFFT = 64
-M = 4
+# # Parameters
+# N = 100
+# NFFT = 64
+# M = 4
 
-# Short Training Sequence
-X1 = generate_preamble(NFFT)
+# # Short Training Sequence
+# X1 = generate_preamble(NFFT)
 
-# Long Training Sequence
+# # Long Training Sequence
 
-# Data
-Data = contellation(N, NFFT, M)
-X2 = OFDM_Symb(N, NFFT, Data)
+# # Data
+# Data = contellation(N, NFFT, M)
+# X2 = OFDM_Symb(N, NFFT, Data)
 
 
-X = np.concatenate((X1, X2))
+# X = np.concatenate((X1, X2))
 
-X.astype("float32").tofile("TX.bin")
+# X.astype("float32").tofile("TX.bin")
 
+STS = pickle.load(open("STS.pkl", "rb"))
+print(STS)
 
 # LTS_FD = [
 #     0,
