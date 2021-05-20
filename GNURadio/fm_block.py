@@ -93,7 +93,7 @@ class fm_block(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_antenna("RX2", 0)
-        self.uhd_usrp_source_0.set_gain(10, 0)
+        self.uhd_usrp_source_0.set_gain(8, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
@@ -110,7 +110,7 @@ class fm_block(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(10, 0)
+        self.uhd_usrp_sink_0.set_gain(2, 0)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wifi/Wireless_DL/MATLAB/DeepComm/TX.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/home/wifi/Wireless_DL/MATLAB/DeepComm/RX.bin', False)
