@@ -91,4 +91,5 @@ lts = [lts; lts];
 TX = [sts; lts; TX];
 
 % Write the data to a bin file to be used by GNURadio
+save('TX.mat', 'TX');
 write_complex_binary(TX, 'TX.bin');

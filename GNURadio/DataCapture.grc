@@ -36,7 +36,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2.5e9
+    value: 2.45e9
   states:
     bus_sink: false
     bus_source: false
@@ -290,7 +290,7 @@ blocks:
     comment: ''
     dev_addr: '"addr=192.168.10.2"'
     dev_args: ''
-    gain0: '2'
+    gain0: '10'
     gain1: '0'
     gain10: '0'
     gain11: '0'
@@ -631,7 +631,7 @@ blocks:
     dc_offs_enb9: default
     dev_addr: '"addr=192.168.20.2"'
     dev_args: ''
-    gain0: '8'
+    gain0: '6'
     gain1: '0'
     gain10: '0'
     gain11: '0'

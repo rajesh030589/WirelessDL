@@ -31,7 +31,7 @@ stringRX = strcat("RX.bin");
 
 TX = read_complex_binary(stringTX);
 RX = read_complex_binary(stringRX);
-RX = [TX;TX;TX;TX;TX];
+% RX = [TX; TX; TX; TX; TX];
 
 k = 1;
 pow = zeros(length(RX), 1);
@@ -47,7 +47,7 @@ while length(RX) > total_symbols + 320 % 320 is the extra preamble
     if k < 50000
         k = k + 1;
         continue;
-    elseif pow(k) - pow(k - 1000) < 0.012
+    elseif pow(k) - pow(k - 1000) < 0.0012
         k = k + 1;
         continue;
     end
@@ -134,7 +134,7 @@ while length(RX) > total_symbols + 320 % 320 is the extra preamble
     % Channel Estimation
     H = zeros(size_of_FFT, 1);
 
-    for j = [7:32 34:58]
+    for j = subcarrier_locations
         H(j) = 0.5 * (LTS1(j) + LTS2(j)) * sign(LTS(j));
     end
 
@@ -150,7 +150,6 @@ while length(RX) > total_symbols + 320 % 320 is the extra preamble
         for j = subcarrier_locations
 
             if ~(any(pilot_carriers(:) == j))
-                H(j)
                 detected_symbols(l, 1) = (Y(j, i) / H(j)) * exp(1j * theta);
                 l = l + 1;
             end
@@ -159,65 +158,69 @@ while length(RX) > total_symbols + 320 % 320 is the extra preamble
 
     end
 
+
+
+    %Constellation View
+
     % Symbols that were transmitted
     mod_symbols = open('mod_symbols.mat');
     mod_symbols = mod_symbols.mod_symbols;
-% 
-%     % Data after encoder and before decoder
-    encoded_data = open('encoded_data.mat');
-    encoded_data = encoded_data.encoded_data;
-%     demod_data = qamdemod(detected_symbols, mod_order, 'OutputType', 'llr', 'UnitAveragePower', true);
-demod_data = 2*encoded_data - 1 ;%
-check = real(detected_symbols);
-gffg = (check/2.133 - mod_symbols); 
-% 
-%     % BER before Decoder
-%     biterr(encoded_data, demod_data) / total_no_bits
-% 
-%     % Decoder BER
-    decoded_data = Decoder(mod_symbols, dec_type, encoded_no_bits, blk_len);
+    data_tx = qamdemod(mod_symbols, mod_order, 'UnitAveragePower', true);
+    
+    color_map = jet(mod_order);
+    figure();
+    hold on;
+    grid on;
+    for i = 1:mod_order
+        scatter(real(detected_symbols(data_tx == i-1)), imag(detected_symbols(data_tx == i-1)),[],rand(1,3))
+
+    end
+
+    % Decoder
+    demod_data = -qamdemod(detected_symbols, mod_order, 'OutputType', 'llr', 'UnitAveragePower', true);
+    decoded_data = Decoder(demod_data, dec_type, encoded_no_bits, blk_len);
     data_to_encode = open('data_input.mat');
     data_to_encode = data_to_encode.data_input;
-    biterr(decoded_data, data_to_encode)/encoded_no_bits
+    fprintf("The decoded BER is : %1.4f\n", biterr(decoded_data, data_to_encode) / encoded_no_bits)
 
-    % %     mod_symbols = open('mod_symbols.mat');
-    % %     mod_symbols = mod_symbols.mod_symbols;
-        figure()
-        hold on;
-    % %
-        one_bit = detected_symbols(mod_symbols==1);
-        zero_bit = detected_symbols(mod_symbols==-1);
-        scatter(real(one_bit),imag(one_bit),'b')
-        scatter(real(zero_bit),imag(zero_bit),'r')
+    RX(1:data_end_id) = [];
+
+    break;
+end
+
+% %     mod_symbols = open('mod_symbols.mat');
+% %     mod_symbols = mod_symbols.mod_symbols;
+%         figure()
+%         hold on;
+%     % %
+%         one_bit = detected_symbols(mod_symbols==1);
+%         zero_bit = detected_symbols(mod_symbols==-1);
+%         scatter(real(one_bit),imag(one_bit),'b')
+%         scatter(real(zero_bit),imag(zero_bit),'r')
 
 %         demod_data = qamdemod(mod_symbols, mod_order, 'UnitAveragePower', true);
-% 
+%
 %         figure;
 %         scatter(real(detected_symbols(demod_data == 0)), imag(detected_symbols(demod_data == 0)),'r')
 %         hold on;
 % %         scatter(real(mod_symbols(demod_data == 0)), imag(mod_symbols(demod_data == 0)))
-%     
+%
 % %      figure;
 %         scatter(real(detected_symbols(demod_data == 1)), imag(detected_symbols(demod_data == 1)),'b')
 % %         hold on;
 % %         scatter(real(mod_symbols(demod_data == 1)), imag(mod_symbols(demod_data == 1)))
-%     
+%
 % %          figure;
 %         scatter(real(detected_symbols(demod_data == 2)), imag(detected_symbols(demod_data == 2)),'g')
 %         hold on;
 %         scatter(real(mod_symbols(demod_data == 2)), imag(mod_symbols(demod_data == 2)))
-    
+
 %          figure;
 %         scatter(real(detected_symbols(demod_data == 3)), imag(detected_symbols(demod_data == 3)),'k')
 %         hold on;
 %         scatter(real(mod_symbols(demod_data == 3)), imag(mod_symbols(demod_data == 3)))
 
 %     scatter(real(detected_symbols), imag(detected_symbols))
-
-    RX(1:data_end_id) = [];
-
-    break;
-end
 
 %
 % %
