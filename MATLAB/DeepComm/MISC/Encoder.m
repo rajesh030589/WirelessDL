@@ -1,19 +1,11 @@
-function Encoded_data = Encoder(data_input, type, no_of_blocks, block_length, code_rate)
+function encoded_data = Encoder(data_input, type, no_encoded_bits, block_length)
 
     if strcmp(type, 'turbo')
         turboEnc = comm.TurboEncoder('InterleaverIndicesSource', 'Input port');
-        coded_block_length = block_length / code_rate + 12;
-        Encoded_data = zeros(coded_block_length, no_of_blocks);
+        intrlvrInd = randperm(length(dataIn));
+        save('Interleaver.mat', 'intrlvrInd');
+        encoded_data = step(turboEnc, dataIn, intrlvrInd);
 
-        for i = 1:no_of_blocks
-            X = data_input(:, i);
-            intrlvrInd = [22, 20, 25, 4, 10, 15, 28, 11, 18, 29, 27,...
-                35, 37, 2, 39, 30, 34, 16, 36, 8, 13, 5, 17, 14, 33, 7,...
-                32, 1, 26, 12, 31, 24, 6, 23, 21, 19, 9, 38, 3, 0] + 1;
-            encoded_data = step(turboEnc, X, intrlvrInd);
-            Encoded_data(:, i) = encoded_data;
-        end
-        
     elseif strcmp(type, 'convolutional')
         code_rate = 2; % Coding Rate
         total_encoded_bits = code_rate * no_encoded_bits;

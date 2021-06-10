@@ -74,7 +74,9 @@ class fm_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.tx_gain = tx_gain = 0
         self.samp_rate = samp_rate = 10e6
+        self.rx_gain = rx_gain = 15
         self.freq = freq = 2.45e9
 
         ##################################################
@@ -93,7 +95,7 @@ class fm_block(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_antenna("RX2", 0)
-        self.uhd_usrp_source_0.set_gain(6, 0)
+        self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
@@ -110,7 +112,7 @@ class fm_block(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(10, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wifi/Wireless_DL/MATLAB/DeepComm/TX.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/home/wifi/Wireless_DL/MATLAB/DeepComm/RX.bin', False)
@@ -133,6 +135,13 @@ class fm_block(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_tx_gain(self):
+        return self.tx_gain
+
+    def set_tx_gain(self, tx_gain):
+        self.tx_gain = tx_gain
+        self.uhd_usrp_sink_0.set_gain(self.tx_gain, 0)
+
     def get_samp_rate(self):
         return self.samp_rate
 
@@ -140,6 +149,13 @@ class fm_block(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate
         self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
+
+    def get_rx_gain(self):
+        return self.rx_gain
+
+    def set_rx_gain(self, rx_gain):
+        self.rx_gain = rx_gain
+        self.uhd_usrp_source_0.set_gain(self.rx_gain, 0)
 
     def get_freq(self):
         return self.freq

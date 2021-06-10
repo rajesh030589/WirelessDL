@@ -44,6 +44,18 @@ blocks:
     coordinate: [280, 12.0]
     rotation: 0
     state: enabled
+- name: rx_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: '15'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 12.0]
+    rotation: 0
+    state: enabled
 - name: samp_rate
   id: variable
   parameters:
@@ -54,6 +66,18 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [184, 12]
+    rotation: 0
+    state: enabled
+- name: tx_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 12.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_0
@@ -290,7 +314,7 @@ blocks:
     comment: ''
     dev_addr: '"addr=192.168.10.2"'
     dev_args: ''
-    gain0: '10'
+    gain0: tx_gain
     gain1: '0'
     gain10: '0'
     gain11: '0'
@@ -631,7 +655,7 @@ blocks:
     dc_offs_enb9: default
     dev_addr: '"addr=192.168.20.2"'
     dev_args: ''
-    gain0: '6'
+    gain0: rx_gain
     gain1: '0'
     gain10: '0'
     gain11: '0'

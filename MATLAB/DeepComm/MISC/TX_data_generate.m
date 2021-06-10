@@ -4,39 +4,30 @@ close all;
 
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-no_of_ofdm_symbols = 3840;
+no_of_ofdm_symbols = 800;
 size_of_FFT = 64;
 cp_length = 16;
 no_of_subcarriers = 48;
 total_symbols = no_of_ofdm_symbols * no_of_subcarriers;
-mod_order = 64;
+mod_order = 2;
 bit_per_symbol = log2(mod_order);
 total_no_bits = total_symbols * bit_per_symbol;
-enc_type = 'turbo'; %'convolutional'
-block_len = 40; % Convolutional Code Parameter
-rate = 1/3;
-no_of_blocks = floor((rate * total_no_bits)/ (block_len + 12*rate));
-encoded_no_bits = block_len * no_of_blocks;
-no_encoder_out_bits = (encoded_no_bits / rate) + 12 * no_of_blocks;
-extra_bits = total_no_bits - no_encoder_out_bits;
-no_preamble_symbols = 4;
-preamble_len = no_preamble_symbols * (size_of_FFT + cp_length);
-total_no_of_data_samples = no_of_ofdm_symbols * (size_of_FFT + cp_length);
-total_no_of_samples = total_no_of_data_samples + preamble_len;
+enc_type = 'convolutional'; %'turbo'; %'convolutional'
+blk_len = 10;
+encoded_no_bits = 0.5 * total_no_bits; %(total_no_bits - 12) / 3;
+total_no_of_samples = no_of_ofdm_symbols * (size_of_FFT + cp_length);
 no_of_pilot_carriers = 4;
 subcarrier_locations = [7:32 34:59];
 pilot_carriers = [12 26 40 54];
 pilot_values = zeros(size_of_FFT, 1);
 pilot_values(pilot_carriers, 1) = [1; 1; 1; -1];
-TX_attenuation = 0; % dB
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Encoding
-data_input = randi([0 1], block_len, no_of_blocks);
+data_input = randi([0 1], encoded_no_bits, 1);
 save('data_input.mat', 'data_input');
-encoded_data = Encoder(data_input, enc_type, no_of_blocks, block_len, rate);
+encoded_data = Encoder(data_input, enc_type, encoded_no_bits, blk_len);
 save('encoded_data.mat', 'encoded_data');
-encoded_data = [encoded_data(:); zeros(extra_bits, 1)];
 
 % Modulation
 mod_symbols = qammod(encoded_data, mod_order, 'InputType', 'bit', 'UnitAveragePower', true);
@@ -98,7 +89,7 @@ lts = [lts; lts];
 
 % Concatenate the lts and sts to the transmit data
 TX = [sts; lts; TX];
-TX = TX .* (sqrt(10^(-TX_attenuation / 10)));
+
 % Write the data to a bin file to be used by GNURadio
 save('TX.mat', 'TX');
 write_complex_binary(TX, 'TX.bin');
