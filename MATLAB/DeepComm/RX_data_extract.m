@@ -246,7 +246,7 @@ while k + total_no_of_samples < length(RX)
         EncOut4(good_pkt4, 1:no_of_blocks, 1:coded_block_len) = Encoded_data.';
     end
 
-    if pkt_received > 300
+    if pkt_received > 50
         break;
     end
 
