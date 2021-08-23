@@ -13,7 +13,7 @@ data_generate = True
 sanity_check = True
 OTA_data = True
 Frame_802_11 = True
-N_captures = 100
+N_captures = 10
 
 
 id = "QPSK_FRAMED_OTA_1"
