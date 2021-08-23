@@ -3,7 +3,7 @@ clc;
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 no_of_frames = 30;
-no_of_ofdm_symbols_per_frame = 2000;
+no_of_ofdm_symbols_per_frame = 4500;
 no_signal_symbols = 1;
 total_ofdm_symbols_per_frame = no_of_ofdm_symbols_per_frame + no_signal_symbols;
 size_of_FFT = 64;
@@ -11,7 +11,7 @@ cp_length = 16;
 no_of_subcarriers = 48;
 total_msg_symbols = no_of_ofdm_symbols_per_frame * no_of_subcarriers;
 signal_field_symbols = no_signal_symbols * no_of_subcarriers;
-mod_order = 2;
+mod_order = 4;
 bit_per_symbol = log2(mod_order);
 total_no_bits = total_msg_symbols * bit_per_symbol;
 enc_type = 'turbo'; %'convolutional'
