@@ -27,6 +27,10 @@ file_name = "Dataset_" + str(id) + "_" + str(current_date)
 
 # make a folder for today's data
 try:
+    try:
+        os.mkdir("Datasets")
+    except:
+        pass
     os.mkdir(file_name)
     os.mkdir(file_name + "/Figures")
 except:
