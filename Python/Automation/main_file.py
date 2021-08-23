@@ -23,7 +23,7 @@ if OTA_data == True and Frame_802_11 == False:
 
 
 current_date = date.today()
-file_name = "Dataset_" + str(id) + "_" + str(current_date)
+file_name = "Datasets/Dataset_" + str(id) + "_" + str(current_date)
 
 # make a folder for today's data
 try:

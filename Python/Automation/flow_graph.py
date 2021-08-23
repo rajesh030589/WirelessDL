@@ -20,6 +20,8 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
+import os
+import pathlib
 
 
 class fm_block(gr.top_block):
@@ -69,9 +71,10 @@ class fm_block(gr.top_block):
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 10000000)
+        current_wd = os.path.abspath(os.getcwd())
         self.blocks_file_source_0 = blocks.file_source(
             gr.sizeof_gr_complex * 1,
-            "/home/rajesh/WirelessDL/Python/Automation/TX.bin",
+            current_wd + "/TX.bin",
             False,
             0,
             0,
@@ -79,7 +82,7 @@ class fm_block(gr.top_block):
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
-            "/home/rajesh/WirelessDL/Python/Automation/RX.bin",
+            current_wd + "/RX.bin",
             False,
         )
         self.blocks_file_sink_0.set_unbuffered(False)
