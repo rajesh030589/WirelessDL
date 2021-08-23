@@ -1,6 +1,7 @@
 function awgn_channel(ch_type)
-    addpath('/home/rajesh/WirelessDL/Python/Automation/Imp_Files');
-    addpath('/home/rajesh/WirelessDL/Python/Automation/Imp_Functions');
+    currentFolder = pwd;
+    addpath(strcat(currentFolder, '/Imp_Files'));
+    addpath(strcat(currentFolder, '/Imp_Functions'));
     clearvars -except ch_type
     SNR = 22;
     SNR = 10^(SNR / 10);

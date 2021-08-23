@@ -1,6 +1,7 @@
 function TX_Unframed()
-    addpath('/home/rajesh/WirelessDL/Python/Automation/Imp_Files');
-    addpath('/home/rajesh/WirelessDL/Python/Automation/Imp_Functions');
+    currentFolder = pwd;
+    addpath(strcat(currentFolder, '/Imp_Files'));
+    addpath(strcat(currentFolder, '/Imp_Functions'));
 
     run('Parameters_Unframed.m');
 
