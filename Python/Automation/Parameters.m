@@ -2,7 +2,7 @@ clearvars;
 clc;
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-no_of_frames = 30;
+no_of_frames = 10;
 enc_type = 'convolutional'; %'turbo'; %'convolutional'
 dec_type = 'MAP'; %'convolutional' 'MAP'
 block_len = 10; % Convolutional Code Parameter
@@ -14,10 +14,11 @@ cp_length = 16;
 no_of_subcarriers = 48;
 no_signal_symbols = 1;
 no_preamble_symbols = 4;
-mod_order = 4;
+mod_order = 64;
+no_of_big_blocks = 60;
 
 no_of_data_blocks = 2^block_len;
-no_of_big_blocks = 10;
+
 no_of_blocks = no_of_data_blocks * no_of_big_blocks;
 encoded_no_bits = block_len * no_of_blocks;
 coded_block_len = (block_len + term_bits) / rate;

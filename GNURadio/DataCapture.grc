@@ -48,7 +48,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '15'
+    value: '20'
   states:
     bus_sink: false
     bus_source: false
@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '10'
+    value: '15'
   states:
     bus_sink: false
     bus_source: false
@@ -117,9 +117,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1104, 220.0]
+    coordinate: [1056, 540.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:
@@ -198,9 +198,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1352, 416.0]
+    coordinate: [1360, 412.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
   parameters:
@@ -297,7 +297,7 @@ blocks:
     bus_structure: null
     coordinate: [1352, 212.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: uhd_usrp_sink_0
   id: uhd_usrp_sink
   parameters:
@@ -572,9 +572,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [504, 180.0]
+    coordinate: [528, 52.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: uhd_usrp_source_0
   id: uhd_usrp_source
   parameters:
@@ -1008,11 +1008,12 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [872, 172.0]
+    coordinate: [872, 76.0]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
+- [blocks_file_source_0, '0', blocks_head_0, '0']
 - [blocks_file_source_0, '0', uhd_usrp_sink_0, '0']
 - [blocks_head_0, '0', qtgui_time_sink_x_0, '0']
 - [uhd_usrp_source_0, '0', blocks_head_0, '0']

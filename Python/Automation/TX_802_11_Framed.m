@@ -19,6 +19,12 @@ function TX_802_11_Framed()
         sts = [];
         lts = [];
 
+        % data_input = zeros(block_len, no_of_blocks);
+        % data_input1 = de2bi(0:no_of_data_blocks - 1).';
+
+        % for i = 1:no_of_big_blocks
+        %     data_input(:, (i - 1) + 1:(i - 1) + no_of_data_blocks) = data_input1;
+        % end
         data_input = randi([0 1], block_len, no_of_blocks);
         encoded_data = Encoder(data_input, enc_type, no_of_blocks, block_len, rate);
         encoder_data = [encoded_data(:); zeros(extra_bits, 1)];
