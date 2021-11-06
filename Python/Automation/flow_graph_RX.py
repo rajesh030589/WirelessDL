@@ -31,9 +31,8 @@ class fm_block(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 1
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 6
+        self.rx_gain = rx_gain = 3
         self.freq = freq = 2.2e9
 
         ##################################################
@@ -55,31 +54,8 @@ class fm_block(gr.top_block):
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
-        self.uhd_usrp_sink_0 = uhd.usrp_sink(
-            ",".join(("addr=192.168.10.2", "")),
-            uhd.stream_args(
-                cpu_format="fc32",
-                args="",
-                channels=list(range(0, 1)),
-            ),
-            "",
-        )
-        self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_sink_0.set_time_now(uhd.time_spec(time.time()), uhd.ALL_MBOARDS)
-
-        self.uhd_usrp_sink_0.set_center_freq(freq, 0)
-        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 10000000)
         current_wd = os.path.abspath(os.getcwd())
-        self.blocks_file_source_0 = blocks.file_source(
-            gr.sizeof_gr_complex * 1,
-            current_wd + "/TX.bin",
-            False,
-            0,
-            0,
-        )
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
             current_wd + "/RX.bin",
@@ -90,16 +66,8 @@ class fm_block(gr.top_block):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_file_source_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_head_0, 0))
-
-    def get_tx_gain(self):
-        return self.tx_gain
-
-    def set_tx_gain(self, tx_gain):
-        self.tx_gain = tx_gain
-        self.uhd_usrp_sink_0.set_gain(self.tx_gain, 0)
 
     def get_samp_rate(self):
         return self.samp_rate

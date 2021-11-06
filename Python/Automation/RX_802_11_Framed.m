@@ -134,7 +134,7 @@ function RX_802_11_Framed()
         data_to_encode = data_to_encode.Data_Input;
         data_to_encode = data_to_encode(:, :, frame_num + 1);
         bit_err = biterr(decoded_data, data_to_encode) / encoded_no_bits;
-        fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err)
+        fprintf("Frame: %d  SNR:  %.2f  BER: %1.6f\n", frame_num, snr_estimate, bit_err)
 
         Frame_Error(n_detect, 1) = bit_err;
         Frame_Error(n_detect, 2) = frame_num;

@@ -4,7 +4,7 @@ function TX_802_11_Framed()
     addpath(strcat(currentFolder, '/Imp_Functions'));
 
     run('Parameters.m');
-
+    rng(30);
     %Frame Data
     Data_Input = zeros(block_len, no_of_blocks, no_of_frames);
     Encoder_Output = zeros(coded_block_len, no_of_blocks, no_of_frames);
