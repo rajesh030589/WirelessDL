@@ -12,7 +12,7 @@ from data_utils import save_datafiles, plot_histogram
 
 data_generate = True
 sanity_check = True
-OTA_data = True
+OTA_data = False
 Frame_802_11 = True
 N_captures = 40
 save_data = False
@@ -65,7 +65,7 @@ for i in tqdm(range(N_captures)):
     if OTA_data:
         os.system("python3 flow_graph.py")
     else:
-        eng.awgn_channel("complex_noise", nargout=0)
+        eng.awgn_channel("pass", nargout=0)
 
     # Decode RX
     if Frame_802_11:

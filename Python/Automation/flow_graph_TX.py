@@ -32,7 +32,7 @@ class fm_block(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 15
+        self.tx_gain = tx_gain = 20
         self.samp_rate = samp_rate = 10e6
         self.freq = freq = 2.2e9
 
