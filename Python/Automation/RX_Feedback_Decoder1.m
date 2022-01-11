@@ -1,9 +1,9 @@
-function RX_802_11_Framed()
+function RX_Feedback_Decoder1()
 
     currentFolder = pwd;
     addpath(strcat(currentFolder, '/Imp_Files'));
     addpath(strcat(currentFolder, '/Imp_Functions'));
-    run('Parameters.m');
+    run('Parameters_feedback.m');
 
     % Extraction of the received data
     RX = read_complex_binary('RX.bin');
@@ -12,10 +12,10 @@ function RX_802_11_Framed()
     % STS Packet Detection
     st_id_list = STS_detect(RX, total_no_of_samples);
 
-    Data_Output = zeros(coded_block_len, no_of_blocks, 35);
-    Frame_Error = ones(35, 2);
-    Receiver_Output = zeros(total_msg_symbols, 35);
-
+    Y1_Output = open("Feedback_Files/Y1_Output.mat");
+    Y1_Output = Y1_Output.Y1_Output;
+    frame_capture = open("frame_capture.mat");
+    frame_capture = frame_capture.frame_capture;
     err = 0;
     err_count = 0;
 
@@ -125,35 +125,32 @@ function RX_802_11_Framed()
             continue;
         end
 
-        Receiver_Output(:, n_detect) = detected_symbols;
         % Decoder
-        demod_data = -qamdemod(detected_symbols, mod_order, 'OutputType', 'approxllr', 'UnitAveragePower', true);
-        demod_data = demod_data(1:end - extra_bits);
+        decoded_data = ~qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
+        decoded_data = decoded_data(1:end - extra_bits);
 
-        demod_data = reshape(demod_data, coded_block_len, no_of_blocks);
-
-        decoded_data = Decoder(demod_data, dec_type, no_of_blocks, block_len);
-        data_to_encode = open('Data_Files/Data_Input.mat');
-        data_to_encode = data_to_encode.Data_Input;
-        data_to_encode = data_to_encode(:, :, frame_num + 1);
+        data_to_encode = open('Feedback_Files/Bit_Input.mat');
+        data_to_encode = data_to_encode.Bit_Input;
+        data_to_encode = data_to_encode(:, frame_num + 1);
         bit_err = biterr(decoded_data, data_to_encode) / encoded_no_bits;
+
         fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err);
 
-        Frame_Error(n_detect, 1) = bit_err;
-        Frame_Error(n_detect, 2) = frame_num;
-        Data_Output(:, :, n_detect) = demod_data;
+        if snr_estimate > 14
+            Y1_Output(:, frame_num + 1) = real(detected_symbols/1.7);
+            frame_capture(frame_num + 1, 1) = 1;
+            save("frame_capture.mat", "frame_capture")
 
-        if bit_err < 0.45
-            err_count = err_count +1;
-            err = err + bit_err;
+            if nnz(frame_capture) == no_of_frames
+                fprintf("All frames captured\n");
+                break;
+            end
+
         end
 
     end
 
-    fprintf("Total BER %1.4f\n", err / err_count);
-    save('Data_Files/Receiver_Output.mat', 'Receiver_Output')
-    save('Data_Files/Frame_Error.mat', 'Frame_Error')
-    save('Data_Files/Data_Output.mat', 'Data_Output')
+    save('Feedback_Files/Y1_Output.mat', 'Y1_Output')
 end
 
 function st_id = STS_detect(RX, total_no_of_samples)

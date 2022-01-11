@@ -48,7 +48,11 @@ blocks:
   id: variable
   parameters:
     comment: ''
+<<<<<<< HEAD
     value: '2'
+=======
+    value: '20'
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
   states:
     bus_sink: false
     bus_source: false
@@ -95,7 +99,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1328, 84.0]
+=======
+    coordinate: [1312, 576.0]
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
     rotation: 0
     state: disabled
 - name: blocks_file_source_0
@@ -119,7 +127,7 @@ blocks:
     bus_structure: null
     coordinate: [216, 204.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_head_0
   id: blocks_head
   parameters:
@@ -313,7 +321,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1328, 204.0]
+=======
+    coordinate: [1288, 212.0]
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
     rotation: 0
     state: enabled
 - name: uhd_usrp_sink_0
@@ -592,7 +604,7 @@ blocks:
     bus_structure: null
     coordinate: [504, 180.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: uhd_usrp_source_0
   id: uhd_usrp_source
   parameters:
@@ -768,7 +780,7 @@ blocks:
     dc_offs_enb7: default
     dc_offs_enb8: default
     dc_offs_enb9: default
-    dev_addr: '"addr=192.168.20.2"'
+    dev_addr: '"addr=192.168.10.2"'
     dev_args: ''
     gain0: rx_gain
     gain1: '0'

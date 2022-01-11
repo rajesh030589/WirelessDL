@@ -40,7 +40,6 @@ function TX_Feedback_Encoder1()
         P = open('Pilot_matrix.mat');
         P = P.PILOT;
         Pilots = zeros(no_of_pilot_carriers, total_ofdm_symbols_per_frame);
-
         A = zeros(size_of_FFT, total_ofdm_symbols_per_frame);
         k = 1;
         l = 1;
@@ -69,7 +68,6 @@ function TX_Feedback_Encoder1()
         end
 
         save('Imp_Files/Pilots.mat', 'Pilots');
-
         % IFFT to generate tx symbols
         for i = 1:total_ofdm_symbols_per_frame
             IFFT_Data = ifft(fftshift(A(1:size_of_FFT, i)), size_of_FFT);
@@ -88,7 +86,6 @@ function TX_Feedback_Encoder1()
         sts(1:size_of_FFT + cp_length, 1) = [IFFT_Data(size_of_FFT - cp_length + 1:size_of_FFT); IFFT_Data];
         sts(size_of_FFT + cp_length) = sts(size_of_FFT + cp_length);
         sts = [sts(1) * 0.5; sts(2:end); sts; sts(1) * 0.5];
-
         % Long Preamble Field
         LTS = open('LTS.mat');
         LTS = LTS.LTS;

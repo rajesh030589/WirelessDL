@@ -18,7 +18,11 @@ enc_type = 'turbo'; %'turbo'; %'convolutional'
 dec_type = 'turbo'; %'turbo'; %'convolutional' 'MAP'
 block_len = 40; % 40; % Convolutional Code Parameter
 term_bits = 4; % 4 % 0;
+<<<<<<< HEAD
 rate = 1/3; %1/2; %1/3;
+=======
+rate = 1/3; % 1/3;
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
 coded_block_len = (block_len + term_bits) / rate;
 no_of_blocks = floor((rate * total_no_bits) / (block_len + term_bits));
 encoded_no_bits = block_len * no_of_blocks;

@@ -25,7 +25,6 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import blocks
-import pmt
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
@@ -78,14 +77,18 @@ class fm_block(gr.top_block, Qt.QWidget):
         ##################################################
         self.tx_gain = tx_gain = 0
         self.samp_rate = samp_rate = 10e6
+<<<<<<< HEAD
         self.rx_gain = rx_gain = 2
+=======
+        self.rx_gain = rx_gain = 20
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
         self.freq = freq = 2.2e9
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-            ",".join(("addr=192.168.20.2", '')),
+            ",".join(("addr=192.168.10.2", '')),
             uhd.stream_args(
                 cpu_format="fc32",
                 args='',
@@ -100,6 +103,7 @@ class fm_block(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
+<<<<<<< HEAD
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join(("addr=192.168.20.2", '')),
             uhd.stream_args(
@@ -115,6 +119,8 @@ class fm_block(gr.top_block, Qt.QWidget):
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
+=======
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
             10000000, #size
             samp_rate, #samp_rate
@@ -167,15 +173,21 @@ class fm_block(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 10000000)
+<<<<<<< HEAD
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/rajesh/ICLRWork/WirelessDL/Python/Automation/TX.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+=======
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
 
 
 
         ##################################################
         # Connections
         ##################################################
+<<<<<<< HEAD
         self.connect((self.blocks_file_source_0, 0), (self.uhd_usrp_sink_0, 0))
+=======
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
         self.connect((self.blocks_head_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_head_0, 0))
 
@@ -193,7 +205,6 @@ class fm_block(gr.top_block, Qt.QWidget):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.uhd_usrp_sink_0.set_gain(self.tx_gain, 0)
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -201,7 +212,10 @@ class fm_block(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+<<<<<<< HEAD
         self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
+=======
+>>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
     def get_rx_gain(self):
@@ -216,7 +230,6 @@ class fm_block(gr.top_block, Qt.QWidget):
 
     def set_freq(self, freq):
         self.freq = freq
-        self.uhd_usrp_sink_0.set_center_freq(self.freq, 0)
         self.uhd_usrp_source_0.set_center_freq(self.freq, 0)
 
 

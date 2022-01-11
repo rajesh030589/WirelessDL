@@ -1,30 +1,29 @@
-function TX_802_11_Framed()
+function RX_Feedback_Encoder2()
     currentFolder = pwd;
     addpath(strcat(currentFolder, '/Imp_Files'));
     addpath(strcat(currentFolder, '/Imp_Functions'));
 
-    run('Parameters.m');
-<<<<<<< HEAD
-    rng(30);
-=======
+    run('Parameters_feedback.m');
     rng(30)
->>>>>>> 86490838c12022ef244da0775f471d09c9cbd639
+
     %Frame Data
+    B2_Output = zeros(total_msg_symbols, no_of_frames);
     TX_Out = zeros(total_no_of_samples, no_of_frames);
 
     % Encoding
+
+    Y2_Input = open('Feedback_Files/Y2_Output.mat');
+    Y2_Input = Y2_Input.Y2_Output;
+    B1_Input = open('Feedback_Files/B1_Output.mat');
+    B1_Input = B1_Input.B1_Output;
 
     for n_frame = 1:no_of_frames
 
         sts = [];
         lts = [];
 
-        data_input = randi([0 1], block_len, no_of_blocks);
-        encoded_data = Encoder(data_input, enc_type, no_of_blocks, block_len, rate);
-        encoder_data = [encoded_data(:); zeros(extra_bits, 1)];
-
         % Modulation
-        mod_symbols = qammod(encoder_data, mod_order, 'InputType', 'bit', 'UnitAveragePower', true);
+        mod_symbols = ActiveDecoder(B1_Input(:, n_frame), 0, 0, Y2_Input(:, n_frame), 0, 2);
 
         % Signal Frame containing the frame number
         sig_symb = zeros(no_signal_symbols, 1);
@@ -100,9 +99,15 @@ function TX_802_11_Framed()
         TX = [sts(1:end - 1); sts(end) + lts(1); lts(2:end - 1); lts(end) + TX(1); TX(2:end)];
 
         % Frame Data
+        B2_Output(:, n_frame) = mod_symbols;
         TX_Out(:, n_frame) = TX;
+        Data_start(n_frame) = (n_frame - 1) * length(TX) + 320 + 1;
     end
 
+    % Save Frame Data
+    save('Feedback_Files/B2_Output.mat', 'B2_Output');
+    save('Data_Files/TX_Out.mat', 'TX_Out');
+    save('Data_Files/Data_start.mat', 'Data_start');
     % Write to Transmitter
     TX = TX_Out(:);
     write_complex_binary(TX, 'TX.bin');

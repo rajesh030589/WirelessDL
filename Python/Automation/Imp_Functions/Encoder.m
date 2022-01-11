@@ -28,7 +28,6 @@ function Encoded_data = Encoder(data_input, type, no_of_blocks, block_length, co
             encoded_data = hConEnc(X);
             Encoded_data(:, i) = encoded_data;
         end
-
     end
 
 end
