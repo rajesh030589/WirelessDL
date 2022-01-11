@@ -36,7 +36,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2.45e9
+    value: 2.2e9
   states:
     bus_sink: false
     bus_source: false
@@ -48,7 +48,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '15'
+    value: '2'
   states:
     bus_sink: false
     bus_source: false
@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '10'
+    value: '0'
   states:
     bus_sink: false
     bus_source: false
@@ -80,6 +80,24 @@ blocks:
     coordinate: [384, 12.0]
     rotation: 0
     state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/rajesh/ICLRWork/WirelessDL/Python/Automation/RX.bin
+    type: complex
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1328, 84.0]
+    rotation: 0
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -87,7 +105,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/rajesh/WirelessDL/Python/Automation/TX.bin
+    file: /home/rajesh/ICLRWork/WirelessDL/Python/Automation/TX.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -119,7 +137,7 @@ blocks:
     bus_structure: null
     coordinate: [1104, 220.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:
@@ -198,9 +216,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1352, 416.0]
+    coordinate: [1320, 332.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
   parameters:
@@ -295,9 +313,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1352, 212.0]
+    coordinate: [1328, 204.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: uhd_usrp_sink_0
   id: uhd_usrp_sink
   parameters:
@@ -409,7 +427,7 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    dev_addr: '"addr=192.168.10.2"'
+    dev_addr: '"addr=192.168.20.2"'
     dev_args: ''
     gain0: tx_gain
     gain1: '0'
@@ -580,7 +598,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    ant0: '"TX/RX"'
+    ant0: '"RX2"'
     ant1: '"RX2"'
     ant10: '"RX2"'
     ant11: '"RX2"'
@@ -1008,12 +1026,13 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [872, 172.0]
+    coordinate: [848, 300.0]
     rotation: 0
     state: enabled
 
 connections:
 - [blocks_file_source_0, '0', uhd_usrp_sink_0, '0']
+- [blocks_head_0, '0', blocks_file_sink_0, '0']
 - [blocks_head_0, '0', qtgui_time_sink_x_0, '0']
 - [uhd_usrp_source_0, '0', blocks_head_0, '0']
 - [uhd_usrp_source_0, '0', qtgui_freq_sink_x_0, '0']

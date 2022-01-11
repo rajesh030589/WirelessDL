@@ -4,15 +4,11 @@ function TX_802_11_Framed()
     addpath(strcat(currentFolder, '/Imp_Functions'));
 
     run('Parameters.m');
-
+    rng(30);
     %Frame Data
-    Data_Input = zeros(block_len, no_of_blocks, no_of_frames);
-    Encoder_Output = zeros(coded_block_len, no_of_blocks, no_of_frames);
-    Modulator_Output = zeros(total_msg_symbols, no_of_frames);
     TX_Out = zeros(total_no_of_samples, no_of_frames);
 
     % Encoding
-    Data_start = zeros(no_of_frames, 1);
 
     for n_frame = 1:no_of_frames
 
@@ -100,19 +96,9 @@ function TX_802_11_Framed()
         TX = [sts(1:end - 1); sts(end) + lts(1); lts(2:end - 1); lts(end) + TX(1); TX(2:end)];
 
         % Frame Data
-        Data_Input(:, :, n_frame) = data_input;
-        Encoder_Output(:, :, n_frame) = encoded_data;
-        Modulator_Output(:, n_frame) = mod_symbols;
         TX_Out(:, n_frame) = TX;
-        Data_start(n_frame) = (n_frame - 1) * length(TX) + 320 + 1;
     end
 
-    % Save Frame Data
-    save('Data_Files/Data_Input.mat', 'Data_Input');
-    save('Data_Files/Encoded_Output.mat', 'Encoder_Output');
-    save('Data_Files/Modulator_Output.mat', 'Modulator_Output');
-    save('Data_Files/TX_Out.mat', 'TX_Out');
-    save('Data_Files/Data_start.mat', 'Data_start');
     % Write to Transmitter
     TX = TX_Out(:);
     write_complex_binary(TX, 'TX.bin');
