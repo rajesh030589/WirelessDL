@@ -16,6 +16,9 @@ function RX_802_11_Framed()
     Frame_Error = ones(35, 2);
     Receiver_Output = zeros(total_msg_symbols, 35);
 
+    err = 0;
+    err_count = 0;
+
     for n_detect = 1:length(st_id_list)
 
         % Detected Packet
@@ -134,14 +137,20 @@ function RX_802_11_Framed()
         data_to_encode = data_to_encode.Data_Input;
         data_to_encode = data_to_encode(:, :, frame_num + 1);
         bit_err = biterr(decoded_data, data_to_encode) / encoded_no_bits;
-        fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err)
+        fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err);
 
         Frame_Error(n_detect, 1) = bit_err;
         Frame_Error(n_detect, 2) = frame_num;
         Data_Output(:, :, n_detect) = demod_data;
 
+        if bit_err < 0.45
+            err_count = err_count +1;
+            err = err + bit_err;
+        end
+
     end
 
+    fprintf("Total BER %1.4f\n", err / err_count);
     save('Data_Files/Receiver_Output.mat', 'Receiver_Output')
     save('Data_Files/Frame_Error.mat', 'Frame_Error')
     save('Data_Files/Data_Output.mat', 'Data_Output')

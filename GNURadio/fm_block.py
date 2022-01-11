@@ -25,7 +25,6 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import blocks
-import pmt
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
@@ -76,16 +75,16 @@ class fm_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 10
+        self.tx_gain = tx_gain = 0
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 15
-        self.freq = freq = 2.45e9
+        self.rx_gain = rx_gain = 20
+        self.freq = freq = 2.2e9
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-            ",".join(("addr=192.168.20.2", '')),
+            ",".join(("addr=192.168.10.2", '')),
             uhd.stream_args(
                 cpu_format="fc32",
                 args='',
@@ -96,77 +95,70 @@ class fm_block(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_time_now(uhd.time_spec(time.time()), uhd.ALL_MBOARDS)
 
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
-        self.uhd_usrp_source_0.set_antenna("TX/RX", 0)
+        self.uhd_usrp_source_0.set_antenna("RX2", 0)
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
-        self.uhd_usrp_sink_0 = uhd.usrp_sink(
-            ",".join(("addr=192.168.10.2", '')),
-            uhd.stream_args(
-                cpu_format="fc32",
-                args='',
-                channels=list(range(0,1)),
-            ),
-            "",
-        )
-        self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_sink_0.set_time_now(uhd.time_spec(time.time()), uhd.ALL_MBOARDS)
-
-        self.uhd_usrp_sink_0.set_center_freq(freq, 0)
-        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
-        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
-            1024, #size
-            window.WIN_BLACKMAN_hARRIS, #wintype
-            0, #fc
-            samp_rate, #bw
+        self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
+            10000000, #size
+            samp_rate, #samp_rate
             "", #name
-            1,
+            1, #number of inputs
             None # parent
         )
-        self.qtgui_freq_sink_x_0.set_update_time(0.10)
-        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(False)
-        self.qtgui_freq_sink_x_0.enable_grid(False)
-        self.qtgui_freq_sink_x_0.set_fft_average(1.0)
-        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
-        self.qtgui_freq_sink_x_0.set_fft_window_normalized(False)
+        self.qtgui_time_sink_x_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
+
+        self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
+
+        self.qtgui_time_sink_x_0.enable_tags(True)
+        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0.enable_grid(False)
+        self.qtgui_time_sink_x_0.enable_axis_labels(True)
+        self.qtgui_time_sink_x_0.enable_control_panel(False)
+        self.qtgui_time_sink_x_0.enable_stem_plot(False)
 
 
-
-        labels = ['', '', '', '', '',
-            '', '', '', '', '']
+        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
+            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
         widths = [1, 1, 1, 1, 1,
             1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        colors = ['blue', 'red', 'green', 'black', 'cyan',
+            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
             1.0, 1.0, 1.0, 1.0, 1.0]
+        styles = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        markers = [-1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1]
 
-        for i in range(1):
+
+        for i in range(2):
             if len(labels[i]) == 0:
-                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
+                if (i % 2 == 0):
+                    self.qtgui_time_sink_x_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
+                else:
+                    self.qtgui_time_sink_x_0.set_line_label(i, "Im{{Data {0}}}".format(i/2))
             else:
-                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
+                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/rajesh/WirelessDL/Python/Automation/TX.bin', True, 0, 0)
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 10000000)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_file_source_0, 0), (self.uhd_usrp_sink_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_head_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_head_0, 0))
 
 
     def closeEvent(self, event):
@@ -182,15 +174,13 @@ class fm_block(gr.top_block, Qt.QWidget):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.uhd_usrp_sink_0.set_gain(self.tx_gain, 0)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
-        self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
     def get_rx_gain(self):
@@ -205,7 +195,6 @@ class fm_block(gr.top_block, Qt.QWidget):
 
     def set_freq(self, freq):
         self.freq = freq
-        self.uhd_usrp_sink_0.set_center_freq(self.freq, 0)
         self.uhd_usrp_source_0.set_center_freq(self.freq, 0)
 
 
