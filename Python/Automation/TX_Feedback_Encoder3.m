@@ -25,8 +25,8 @@ function TX_Feedback_Encoder3()
         lts = [];
 
         % Modulation
-        mod_symbols = ActiveEncoder(Bit_Input( :, n_frame), Z1_Input(:, n_frame), Z2_Input(:, n_frame), 3);
-        
+        mod_symbols = ActiveEncoder(Bit_Input(:, n_frame), Z1_Input(:, n_frame), Z2_Input(:, n_frame), 3);
+
         % Signal Frame containing the frame number
         sig_symb = zeros(no_signal_symbols, 1);
 
@@ -58,7 +58,7 @@ function TX_Feedback_Encoder3()
                         A(j, i) = sig_symb(l);
                         l = l + 1;
                     else
-                        A(j, i) = mod_symbols(k);
+                        A(j, i) = .2 * mod_symbols(k);
                         k = k + 1;
                     end
 

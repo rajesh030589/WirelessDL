@@ -57,7 +57,7 @@ function TX_Feedback_Encoder2()
                         A(j, i) = sig_symb(l);
                         l = l + 1;
                     else
-                        A(j, i) = mod_symbols(k);
+                        A(j, i) = .2 * mod_symbols(k);
                         k = k + 1;
                     end
 

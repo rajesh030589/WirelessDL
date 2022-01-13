@@ -155,7 +155,7 @@ function st_id = STS_detect(RX, total_no_of_samples)
 
     window_size = 64;
     mean_size = 64;
-    corr_th = 0.9;
+    corr_th = 0.7;
     count_cn = 60;
 
     L = length(RX) - total_no_of_samples;

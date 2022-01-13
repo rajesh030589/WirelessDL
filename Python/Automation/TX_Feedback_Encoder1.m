@@ -7,7 +7,7 @@ function TX_Feedback_Encoder1()
     rng(30)
 
     %Frame Data
-    Bit_Input = zeros(block_len*no_of_blocks, no_of_frames);
+    Bit_Input = zeros(block_len * no_of_blocks, no_of_frames);
     C1_Output = zeros(total_msg_symbols, no_of_frames);
     TX_Out = zeros(total_no_of_samples, no_of_frames);
 
@@ -20,7 +20,7 @@ function TX_Feedback_Encoder1()
         lts = [];
 
         data_input = randi([0 1], block_len, no_of_blocks);
-        encoded_data = reshape(data_input,no_of_blocks*block_len,[]);
+        encoded_data = reshape(data_input, no_of_blocks * block_len, []);
         encoder_data = [encoded_data(:); zeros(extra_bits, 1)];
 
         % Modulation
@@ -77,7 +77,7 @@ function TX_Feedback_Encoder1()
         TX = A(:);
 
         % Normalize the modulated data Power
-        TX = TX .* (.8 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
+        TX = TX .* (.2 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
 
         % Short Preamble Field
         STS = open('STS.mat');
