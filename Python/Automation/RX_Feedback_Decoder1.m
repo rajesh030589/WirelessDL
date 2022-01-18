@@ -177,7 +177,7 @@ function st_id = STS_detect(RX, total_no_of_samples)
 
     for i = 1:length(M)
 
-        if (abs(M(i)) > 0.4 && trigger == 0) || i < 0%546119
+        if (abs(M(i)) > 0.4 && trigger == 0) || i < 546119
             continue;
         else
             trigger = 1;
