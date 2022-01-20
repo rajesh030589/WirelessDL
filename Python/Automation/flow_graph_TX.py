@@ -22,10 +22,7 @@ from gnuradio import uhd
 import time
 
 
-
-
 class fm_block(gr.top_block):
-
     def __init__(self):
         gr.top_block.__init__(self, "FM Receiver", catch_exceptions=True)
 
@@ -41,11 +38,11 @@ class fm_block(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
-            ",".join(("addr=192.168.20.2", '')),
+            ",".join(("addr=192.168.10.2", "")),
             uhd.stream_args(
                 cpu_format="fc32",
-                args='',
-                channels=list(range(0,1)),
+                args="",
+                channels=list(range(0, 1)),
             ),
             "",
         )
@@ -55,10 +52,14 @@ class fm_block(gr.top_block):
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/rajesh/ICLRWork/WirelessDL/Python/Automation/TX.bin', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(
+            gr.sizeof_gr_complex * 1,
+            "/home/rajesh/ICLRWork/WirelessDL/Python/Automation/TX.bin",
+            True,
+            0,
+            0,
+        )
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-
-
 
         ##################################################
         # Connections
@@ -93,8 +94,6 @@ class fm_block(gr.top_block):
         self.uhd_usrp_sink_0.set_center_freq(self.freq, 0)
 
 
-
-
 def main(top_block_cls=fm_block, options=None):
     tb = top_block_cls()
 
@@ -112,5 +111,7 @@ def main(top_block_cls=fm_block, options=None):
     tb.wait()
 
     # tb.stop()
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     main()

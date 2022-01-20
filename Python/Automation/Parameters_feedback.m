@@ -2,7 +2,7 @@ clearvars;
 clc;
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-no_of_frames = 10;
+no_of_frames = 1;
 no_of_ofdm_symbols_per_frame = 3000;
 no_signal_symbols = 1;
 total_ofdm_symbols_per_frame = no_of_ofdm_symbols_per_frame + no_signal_symbols;
@@ -12,6 +12,7 @@ no_of_subcarriers = 48;
 total_msg_symbols = no_of_ofdm_symbols_per_frame * no_of_subcarriers;
 signal_field_symbols = no_signal_symbols * no_of_subcarriers;
 mod_order = 2;
+mod_type = "NN";
 bit_per_symbol = log2(mod_order);
 total_no_bits = total_msg_symbols * bit_per_symbol;
 block_len = 40; % 40; % Convolutional Code Parameter
@@ -31,4 +32,8 @@ subcarrier_locations = [7:32 34:59];
 pilot_carriers = [12 26 40 54];
 pilot_values = zeros(size_of_FFT, 1);
 pilot_values(pilot_carriers, 1) = [1; 1; 1; -1];
+
+tx_gain = .01;
+rx_gain = 100;
+sample_offset = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
