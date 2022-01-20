@@ -7,7 +7,7 @@ import scipy.io as sio
 import time
 
 eng = matlab.engine.start_matlab()
-N_captures = 10
+N_captures = 3
 
 eng.frame_capture_1_2(nargout=0)
 for i in range(N_captures):

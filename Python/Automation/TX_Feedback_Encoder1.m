@@ -77,7 +77,7 @@ function TX_Feedback_Encoder1()
         TX = A(:);
 
         % Normalize the modulated data Power
-        TX = TX .* (.2 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
+        TX = TX .* (.8 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
 
         % Short Preamble Field
         STS = open('STS.mat');
