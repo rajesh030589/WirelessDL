@@ -10,14 +10,17 @@ function RX_Feedback_Decoder1()
     % Packet Detection
 
     % STS Packet Detection
-    st_id_list = STS_detect(RX, total_no_of_samples);
+    st_id_list = STS_detect(RX, total_no_of_samples,sample_offset);
 
-    Y1_Output = open("Feedback_Files/Y1_Output.mat");
-    Y1_Output = Y1_Output.Y1_Output;
+    try
+        Y1_Output = open("Feedback_Files/Y1_Output.mat");
+        Y1_Output = Y1_Output.Y1_Output;
+    catch
+        Y1_Output = zeros(total_msg_symbols, no_of_frames);
+    end
+
     frame_capture = open("frame_capture.mat");
     frame_capture = frame_capture.frame_capture;
-    err = 0;
-    err_count = 0;
 
     for n_detect = 1:length(st_id_list)
 
@@ -126,7 +129,12 @@ function RX_Feedback_Decoder1()
         end
 
         % Decoder
-        decoded_data = ~qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
+        if strcmp(mod_type, 'NN')
+            decoded_data = qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
+        else
+            decoded_data = ~qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
+        end
+
         decoded_data = decoded_data(1:end - extra_bits);
 
         data_to_encode = open('Feedback_Files/Bit_Input.mat');
@@ -137,7 +145,7 @@ function RX_Feedback_Decoder1()
         fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err);
 
         if snr_estimate > 14
-            Y1_Output(:, frame_num + 1) = real(detected_symbols/1.7);
+            Y1_Output(:, frame_num + 1) = rx_gain * real(detected_symbols);
             frame_capture(frame_num + 1, 1) = 1;
             save("frame_capture.mat", "frame_capture")
 
@@ -153,7 +161,7 @@ function RX_Feedback_Decoder1()
     save('Feedback_Files/Y1_Output.mat', 'Y1_Output')
 end
 
-function st_id = STS_detect(RX, total_no_of_samples)
+function st_id = STS_detect(RX, total_no_of_samples, sample_offset)
 
     window_size = 64;
     mean_size = 64;
@@ -177,7 +185,7 @@ function st_id = STS_detect(RX, total_no_of_samples)
 
     for i = 1:length(M)
 
-        if (abs(M(i)) > 0.4 && trigger == 0) || i < 546119
+        if (abs(M(i)) > 0.4 && trigger == 0) || i < sample_offset %546119
             continue;
         else
             trigger = 1;

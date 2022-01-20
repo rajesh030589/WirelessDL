@@ -17,7 +17,15 @@ function RX_Feedback_Encoder1()
         lts = [];
 
         % Modulation
-        mod_symbols = ActiveDecoder(0, 0, Y1_Input(:, n_frame), 0, 0, 1);
+        if strcmp(mod_type, "NN")
+            encoder_data = Y1_Input(:, n_frame);
+            save('Data_Files/RX_Encoded1.mat', 'encoder_data');
+            system('python3 Imp_Functions/RX_NN_Encoder1.py');
+            mod_symbols = open("Data_Files/RX_Modulated1.mat");
+            mod_symbols = double(mod_symbols.output);
+        else
+            mod_symbols = ActiveDecoder(0, 0, Y1_Input(:, n_frame), 0, 0, 1);
+        end
 
         % Signal Frame containing the frame number
         sig_symb = zeros(no_signal_symbols, 1);
@@ -50,7 +58,7 @@ function RX_Feedback_Encoder1()
                         A(j, i) = sig_symb(l);
                         l = l + 1;
                     else
-                        A(j, i) = .2 * mod_symbols(k);
+                        A(j, i) = tx_gain * mod_symbols(k);
                         k = k + 1;
                     end
 
@@ -72,7 +80,7 @@ function RX_Feedback_Encoder1()
         TX = A(:);
 
         % Normalize the modulated data Power
-        TX = TX .* (.8 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
+        % TX = TX .* (.8 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
 
         % Short Preamble Field
         STS = open('STS.mat');

@@ -10,7 +10,7 @@ function TX_Feedback_Decoder2()
     % Packet Detection
 
     % STS Packet Detection
-    st_id_list = STS_detect(RX, total_no_of_samples);
+    st_id_list = STS_detect(RX, total_no_of_samples,sample_offset);
 
     Z2_Output = open("Feedback_Files/Z2_Output.mat");
     Z2_Output = Z2_Output.Z2_Output;
@@ -125,19 +125,10 @@ function TX_Feedback_Decoder2()
             continue;
         end
 
-        % Decoder
-        decoded_data = qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
-        decoded_data = decoded_data(1:end - extra_bits);
-
-        data_to_encode = open('Feedback_Files/Bit_Input.mat');
-        data_to_encode = data_to_encode.Bit_Input;
-        data_to_encode = data_to_encode(:, frame_num + 1);
-        bit_err = biterr(decoded_data, data_to_encode) / encoded_no_bits;
-
-        fprintf("Frame: %d  SNR:  %.2f  BER: %1.4f\n", frame_num, snr_estimate, bit_err);
+        fprintf("Frame: %d  SNR:  %.2f\n", frame_num, snr_estimate);
 
         if snr_estimate > 14
-            Z2_Output(:, frame_num + 1) = real(detected_symbols/1.7);
+            Z2_Output(:, frame_num + 1) = rx_gain * real(detected_symbols);
             frame_capture(frame_num + 1, 1) = 1;
             save("frame_capture.mat", "frame_capture")
 
@@ -149,10 +140,11 @@ function TX_Feedback_Decoder2()
         end
 
     end
+
     save('Feedback_Files/Z2_Output.mat', 'Z2_Output')
 end
 
-function st_id = STS_detect(RX, total_no_of_samples)
+function st_id = STS_detect(RX, total_no_of_samples, sample_offset)
 
     window_size = 64;
     mean_size = 64;
@@ -176,7 +168,7 @@ function st_id = STS_detect(RX, total_no_of_samples)
 
     for i = 1:length(M)
 
-        if (abs(M(i)) > 0.4 && trigger == 0) || i < 546119
+        if (abs(M(i)) > 0.4 && trigger == 0) || i < sample_offset
             continue;
         else
             trigger = 1;
