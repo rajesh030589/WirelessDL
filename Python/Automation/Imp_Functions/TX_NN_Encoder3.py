@@ -11,7 +11,6 @@ import torch
 import torch.optim as optim
 import numpy as np
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 import scipy.io as sio
 
 #################################

@@ -1,6 +1,7 @@
 import numpy as np
 import matlab.engine
-import os
+import subprocess
+from asyncio.subprocess import DEVNULL
 import signal
 import time
 import scipy.io as sio
@@ -14,5 +15,10 @@ for i in range(N_captures):
     frame_capture = frame_capture["frame_capture"]
     if np.count_nonzero(frame_capture) == len(frame_capture):
         break
-    os.system("python3 flow_graph_RX.py")
+    subprocess.run(
+        "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/flow_graph_RX.py",
+        shell=True,
+        stdout=DEVNULL,
+        stderr=DEVNULL,
+    )
     eng.RX_Feedback_Decoder3(nargout=0)
