@@ -15,10 +15,12 @@ for i in range(N_captures):
     frame_capture = frame_capture["frame_capture"]
     if np.count_nonzero(frame_capture) == len(frame_capture):
         break
+    print("capture :", i + 1, "...\n")
     subprocess.run(
         "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/flow_graph_RX.py",
         shell=True,
         stdout=DEVNULL,
         stderr=DEVNULL,
     )
+    print("Capture done\n")
     eng.RX_Feedback_Decoder2(nargout=0)
