@@ -33,7 +33,7 @@ pilot_carriers = [12 26 40 54];
 pilot_values = zeros(size_of_FFT, 1);
 pilot_values(pilot_carriers, 1) = [1; 1; 1; -1];
 
-tx_gain = .01;
-rx_gain = 100;
-sample_offset = 0;
+tx_gain = 1;
+rx_gain = 1;
+sample_offset = 546119;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

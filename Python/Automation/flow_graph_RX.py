@@ -32,14 +32,14 @@ class fm_block(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 20
+        self.rx_gain = rx_gain = 25
         self.freq = freq = 2.2e9
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-            ",".join(("addr=192.168.10.2", "")),
+            ",".join(("addr=192.168.20.2", "")),
             uhd.stream_args(
                 cpu_format="fc32",
                 args="",

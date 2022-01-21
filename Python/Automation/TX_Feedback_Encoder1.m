@@ -26,7 +26,7 @@ function TX_Feedback_Encoder1()
         % Modulation
         if strcmp(mod_type, "NN")
             save('Data_Files/TX_Encoded1.mat', 'encoder_data');
-            system('python3 Imp_Functions/TX_NN_Encoder1.py');
+            system('python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Imp_Functions/TX_NN_Encoder1.py');
             mod_symbols = open("Data_Files/TX_Modulated1.mat");
             mod_symbols = double(mod_symbols.output);
         else
