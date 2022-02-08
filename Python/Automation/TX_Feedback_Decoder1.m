@@ -131,7 +131,7 @@ function TX_Feedback_Decoder1()
             save("frame_capture.mat", "frame_capture")
 
             if nnz(frame_capture) == no_of_frames
-                fprintf("All frames captured\n");
+                fprintf("\nAll frames captured\n");
                 break;
             end
 

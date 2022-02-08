@@ -29,9 +29,8 @@ class fm_block(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 15
+        self.tx_gain = tx_gain = 0
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 25
         self.freq = freq = 2.2e9
 
         ##################################################
@@ -54,7 +53,7 @@ class fm_block(gr.top_block):
         self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
         self.blocks_file_source_0 = blocks.file_source(
             gr.sizeof_gr_complex * 1,
-            "/home/rajesh/ICLRWork/WirelessDL/Python/Automation/TX.bin",
+            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX.bin",
             True,
             0,
             0,
@@ -79,12 +78,6 @@ class fm_block(gr.top_block):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
-
-    def get_rx_gain(self):
-        return self.rx_gain
-
-    def set_rx_gain(self, rx_gain):
-        self.rx_gain = rx_gain
 
     def get_freq(self):
         return self.freq

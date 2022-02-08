@@ -111,33 +111,25 @@ class Encoder(torch.nn.Module):
             return F.sigmoid(inputs)
         else:
             return inputs
-
-    def forward(self, input, hidden_state, round):
-        # mu_1_enc = 2.9316
-        # v_1_enc = 0.0131
-        # mu_2_enc = 2.9872
-        # v_2_enc = 0.0229
-        # mu_3_enc = 2.9965
-        # v_3_enc = 0.0184
-
-        den_enc = torch.sqrt(self.p1_enc ** 2 + self.p2_enc ** 2 + self.p3_enc ** 2)
-
+            
+    def forward(self, input, hidden_state, round, pow_alloc = False):
+        
         output, hidden_state = self.enc_rnn_fwd(input, hidden_state)
         output = self.enc_act(self.enc_linear(output))
 
         mean, std = torch.mean(output), torch.std(output)
+        output = (output - mean) * 1.0 / std
 
-        if round == 1:
-            output = (output - mean) * 1.0 / std
-            output = np.sqrt(3) * (self.p1_enc * output) / den_enc
+        if pow_alloc:
+            den_enc = torch.sqrt(self.p1_enc ** 2 + self.p2_enc ** 2 + self.p3_enc ** 2)
+            if round == 1:
+                output = np.sqrt(3) * (self.p1_enc * output) / den_enc
 
-        elif round == 2:
-            output = (output - mean) * 1.0 / std
-            output = np.sqrt(3) * (self.p2_enc * output) / den_enc
+            elif round == 2:
+                output = np.sqrt(3) * (self.p2_enc * output) / den_enc
 
-        elif round == 3:
-            output = (output - mean) * 1.0 / std
-            output = np.sqrt(3) * (self.p3_enc * output) / den_enc
+            elif round == 3:
+                output = np.sqrt(3) * (self.p3_enc * output) / den_enc
 
         return output, hidden_state
 

@@ -35,5 +35,5 @@ pilot_values(pilot_carriers, 1) = [1; 1; 1; -1];
 
 tx_gain = 1;
 rx_gain = 1;
-sample_offset = 546119;
+sample_offset = 1546119;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

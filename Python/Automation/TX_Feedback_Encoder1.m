@@ -4,7 +4,7 @@ function TX_Feedback_Encoder1()
     addpath(strcat(currentFolder, '/Imp_Functions'));
 
     run('Parameters_feedback.m');
-    rng(30)
+    %rng(30)
 
     %Frame Data
     Bit_Input = zeros(block_len * no_of_blocks, no_of_frames);
@@ -84,7 +84,9 @@ function TX_Feedback_Encoder1()
         TX = A(:);
 
         % Normalize the modulated data Power
-        %         TX = TX .* (1 / (max(max(abs(real(TX))), max(abs(imag(TX))))));
+        scale_1 = ( 0.8/ (max(max(abs(real(TX))), max(abs(imag(TX))))));
+        TX = TX .* scale_1;
+        save('Feedback_Files/scale_tx_1.mat', 'scale_1');
 
         % Short Preamble Field
         STS = open('STS.mat');

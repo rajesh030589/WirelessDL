@@ -54,11 +54,11 @@ class fm_block(gr.top_block):
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
-        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 10000000)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 3000000)
         current_wd = os.path.abspath(os.getcwd())
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
-            current_wd + "/RX.bin",
+            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX.bin",
             False,
         )
         self.blocks_file_sink_0.set_unbuffered(False)
