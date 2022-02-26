@@ -20,16 +20,30 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
+import os
+
+
+def get_args():
+    parser = ArgumentParser()
+    parser.add_argument("-tx_gain", type=int, default=10)
+    parser.add_argument(
+        "-file_path",
+        type=str,
+        default="/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX.bin",
+    )
+    args = parser.parse_args()
+
+    return args
 
 
 class fm_block(gr.top_block):
-    def __init__(self):
+    def __init__(self, args):
         gr.top_block.__init__(self, "FM Receiver", catch_exceptions=True)
 
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 0
+        self.tx_gain = tx_gain = args.tx_gain
         self.samp_rate = samp_rate = 10e6
         self.freq = freq = 2.2e9
 
@@ -51,9 +65,10 @@ class fm_block(gr.top_block):
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
+        current_wd = os.path.abspath(os.getcwd())
         self.blocks_file_source_0 = blocks.file_source(
             gr.sizeof_gr_complex * 1,
-            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX.bin",
+            args.file_path,
             True,
             0,
             0,
@@ -79,6 +94,12 @@ class fm_block(gr.top_block):
         self.samp_rate = samp_rate
         self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
 
+    def get_rx_gain(self):
+        return self.rx_gain
+
+    def set_rx_gain(self, rx_gain):
+        self.rx_gain = rx_gain
+
     def get_freq(self):
         return self.freq
 
@@ -88,7 +109,7 @@ class fm_block(gr.top_block):
 
 
 def main(top_block_cls=fm_block, options=None):
-    tb = top_block_cls()
+    tb = top_block_cls(get_args())
 
     def sig_handler(sig=None, frame=None):
         tb.stop()

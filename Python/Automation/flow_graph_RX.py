@@ -24,15 +24,28 @@ import os
 import pathlib
 
 
+def get_args():
+    parser = ArgumentParser()
+    parser.add_argument("-rx_gain", type=int, default=10)
+    parser.add_argument(
+        "-file_path",
+        type=str,
+        default="/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX.bin",
+    )
+    args = parser.parse_args()
+
+    return args
+
+
 class fm_block(gr.top_block):
-    def __init__(self):
+    def __init__(self, args):
         gr.top_block.__init__(self, "FM Receiver", catch_exceptions=True)
 
         ##################################################
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 25
+        self.rx_gain = rx_gain = args.rx_gain
         self.freq = freq = 2.2e9
 
         ##################################################
@@ -55,10 +68,9 @@ class fm_block(gr.top_block):
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 3000000)
-        current_wd = os.path.abspath(os.getcwd())
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
-            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX.bin",
+            args.file_path,
             False,
         )
         self.blocks_file_sink_0.set_unbuffered(False)
@@ -94,7 +106,7 @@ class fm_block(gr.top_block):
 
 
 def run_graph(top_block_cls=fm_block, options=None):
-    tb = top_block_cls()
+    tb = top_block_cls(get_args())
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
