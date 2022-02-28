@@ -10,7 +10,7 @@ function RX_Feedback_Decoder3()
     % Packet Detection
 
     % STS Packet Detection
-    st_id_list = STS_detect(RX, total_no_of_samples,sample_offset);
+    st_id_list = STS_detect(RX, total_no_of_samples, sample_offset);
 
     Y3_Output = open("Feedback_Files/Y3_Output.mat");
     Y3_Output = Y3_Output.Y3_Output;
@@ -131,7 +131,7 @@ function RX_Feedback_Decoder3()
             save("frame_capture.mat", "frame_capture")
 
             if nnz(frame_capture) == no_of_frames
-                fprintf("All frames captured\n")
+                fprintf("\nAll frames captured\n")
                 break;
             end
 

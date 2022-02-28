@@ -10,7 +10,7 @@ function RX_Feedback_Decoder2()
     % Packet Detection
 
     % STS Packet Detection
-    st_id_list = STS_detect(RX, total_no_of_samples,sample_offset);
+    st_id_list = STS_detect(RX, total_no_of_samples, sample_offset);
 
     Y2_Output = open("Feedback_Files/Y2_Output.mat");
     Y2_Output = Y2_Output.Y2_Output;
@@ -133,7 +133,7 @@ function RX_Feedback_Decoder2()
             save("frame_capture.mat", "frame_capture")
 
             if nnz(frame_capture) == no_of_frames
-                fprintf("All frames captured\n");
+                fprintf("\nAll frames captured\n");
                 break;
             end
 
@@ -148,7 +148,7 @@ function st_id = STS_detect(RX, total_no_of_samples, sample_offset)
 
     window_size = 64;
     mean_size = 64;
-    corr_th = 0.4;
+    corr_th = 0.8;
     count_cn = 60;
 
     L = length(RX) - total_no_of_samples;

@@ -24,23 +24,35 @@ import os
 import pathlib
 
 
+def get_args():
+    parser = ArgumentParser()
+    parser.add_argument("-rx_gain", type=int, default=10)
+    parser.add_argument(
+        "-file_path",
+        type=str,
+        default="/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX.bin",
+    )
+    args = parser.parse_args()
+
+    return args
+
+
 class fm_block(gr.top_block):
-    def __init__(self):
+    def __init__(self, args):
         gr.top_block.__init__(self, "FM Receiver", catch_exceptions=True)
 
         ##################################################
         # Variables
         ##################################################
-        self.tx_gain = tx_gain = 9
         self.samp_rate = samp_rate = 10e6
-        self.rx_gain = rx_gain = 13
+        self.rx_gain = rx_gain = args.rx_gain
         self.freq = freq = 2.2e9
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-            ",".join(("addr=192.168.20.2", "")),
+            ",".join(("addr=192.168.10.2", "")),
             uhd.stream_args(
                 cpu_format="fc32",
                 args="",
@@ -55,34 +67,10 @@ class fm_block(gr.top_block):
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
-        self.uhd_usrp_sink_0 = uhd.usrp_sink(
-            ",".join(("addr=192.168.10.2", "")),
-            uhd.stream_args(
-                cpu_format="fc32",
-                args="",
-                channels=list(range(0, 1)),
-            ),
-            "",
-        )
-        self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_sink_0.set_time_now(uhd.time_spec(time.time()), uhd.ALL_MBOARDS)
-
-        self.uhd_usrp_sink_0.set_center_freq(freq, 0)
-        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
-        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 10000000)
-        current_wd = os.path.abspath(os.getcwd())
-        self.blocks_file_source_0 = blocks.file_source(
-            gr.sizeof_gr_complex * 1,
-            current_wd + "/TX.bin",
-            False,
-            0,
-            0,
-        )
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 3000000)
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
-            current_wd + "/RX.bin",
+            args.file_path,
             False,
         )
         self.blocks_file_sink_0.set_unbuffered(False)
@@ -90,16 +78,8 @@ class fm_block(gr.top_block):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_file_source_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_head_0, 0))
-
-    def get_tx_gain(self):
-        return self.tx_gain
-
-    def set_tx_gain(self, tx_gain):
-        self.tx_gain = tx_gain
-        self.uhd_usrp_sink_0.set_gain(self.tx_gain, 0)
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -126,7 +106,7 @@ class fm_block(gr.top_block):
 
 
 def run_graph(top_block_cls=fm_block, options=None):
-    tb = top_block_cls()
+    tb = top_block_cls(get_args())
 
     def sig_handler(sig=None, frame=None):
         tb.stop()

@@ -107,32 +107,26 @@ class Decoder(torch.nn.Module):
         else:
             return inputs
 
-    def forward(self, input, hidden_state, round):
-
-        # mu_1_dec = -2.0789
-        # v_1_dec = 5.0892
-        # mu_2_dec = -3.6495
-        # v_2_dec = 5.1956
-
- 
-
-        den_dec = torch.sqrt(self.p1_dec ** 2 + self.p2_dec ** 2)
+    def forward(self, input, hidden_state, round, pow_alloc=False):
 
         output, hidden_state = self.dec_rnn(input, hidden_state)
-        mean, std = torch.mean(output), torch.std(output)
-        if round == 1:
-            output = self.dec_act(self.dec_output(output))
-            output = (output - mean) * 1.0 / std
-            output = np.sqrt(2) * (self.p1_dec * output) / den_dec
 
-        elif round == 2:
+        if round != 3:
             output = self.dec_act(self.dec_output(output))
+            mean, std = torch.mean(output), torch.std(output)
             output = (output - mean) * 1.0 / std
-            output = np.sqrt(2) * (self.p2_dec * output) / den_dec
-
-        elif round == 3:
+        else:
             output = self.dec_output(output)
             output = F.sigmoid(output)
+
+        if pow_alloc:
+
+            den_dec = torch.sqrt(self.p1_dec ** 2 + self.p2_dec ** 2)
+            if round == 1:
+                output = np.sqrt(2) * (self.p1_dec * output) / den_dec
+
+            elif round == 2:
+                output = np.sqrt(2) * (self.p2_dec * output) / den_dec
 
         return output, hidden_state
 
@@ -151,6 +145,7 @@ input_arr = input_arr.type(torch.FloatTensor)
 args.batch_size = input_arr.shape[0]
 input_arr = input_arr.reshape(args.batch_size, 1, 1)
 input = input_arr
+
 hidden_state = torch.zeros(2, args.batch_size, 50)
 
 

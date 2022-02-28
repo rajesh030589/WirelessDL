@@ -107,30 +107,26 @@ class Decoder(torch.nn.Module):
         else:
             return inputs
 
-    def forward(self, input, hidden_state, round):
-
-        # mu_1_dec = -2.0789
-        # v_1_dec = 5.0892
-        # mu_2_dec = -3.6495
-        # v_2_dec = 5.1956
-
-        den_dec = torch.sqrt(self.p1_dec ** 2 + self.p2_dec ** 2)
+    def forward(self, input, hidden_state, round, pow_alloc=False):
 
         output, hidden_state = self.dec_rnn(input, hidden_state)
-        mean, std = torch.mean(output), torch.std(output)
-        if round == 1:
-            output = self.dec_act(self.dec_output(output))
-            output = (output - mean) * 1.0 / std
-            output = np.sqrt(2) * (self.p1_dec * output) / den_dec
 
-        elif round == 2:
+        if round != 3:
             output = self.dec_act(self.dec_output(output))
+            mean, std = torch.mean(output), torch.std(output)
             output = (output - mean) * 1.0 / std
-            output = np.sqrt(2) * (self.p2_dec * output) / den_dec
-
-        elif round == 3:
+        else:
             output = self.dec_output(output)
-            output = F.sigmoid(output)
+            output = torch.sigmoid(output)
+
+        if pow_alloc:
+
+            den_dec = torch.sqrt(self.p1_dec ** 2 + self.p2_dec ** 2)
+            if round == 1:
+                output = np.sqrt(2) * (self.p1_dec * output) / den_dec
+
+            elif round == 2:
+                output = np.sqrt(2) * (self.p2_dec * output) / den_dec
 
         return output, hidden_state
 
@@ -155,7 +151,7 @@ hidden_state = hidden_state["hidden"]
 hidden_state = torch.from_numpy(hidden_state)
 hidden_state = hidden_state.type(torch.FloatTensor)
 
-output, hidden_state = dec_model(input, hidden_state, 1)
+output, hidden_state = dec_model(input, hidden_state, 3)
 
 output = output.detach().numpy()
 output = output.reshape(args.batch_size, 1)

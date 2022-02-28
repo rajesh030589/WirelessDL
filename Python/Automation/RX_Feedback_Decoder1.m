@@ -7,10 +7,11 @@ function RX_Feedback_Decoder1()
 
     % Extraction of the received data
     RX = read_complex_binary('RX.bin');
+
     % Packet Detection
 
     % STS Packet Detection
-    st_id_list = STS_detect(RX, total_no_of_samples,sample_offset);
+    st_id_list = STS_detect(RX, total_no_of_samples, sample_offset);
 
     try
         Y1_Output = open("Feedback_Files/Y1_Output.mat");
@@ -47,6 +48,9 @@ function RX_Feedback_Decoder1()
         lts1 = RX(lts1_start_id:lts1_end_id);
         lts2 = RX(lts2_start_id:lts2_end_id);
         y = RX(data_start_id:data_end_id);
+        scale_1 = open('Feedback_Files/scale_tx_1.mat');
+        scale_1 = scale_1.scale_1;
+        y = y ./ scale_1;
 
         % Coarse Frequency offset
         alpha_ST = (1/16) * angle(sum(conj(sts(1:144)) .* sts(17:160)));
@@ -129,11 +133,8 @@ function RX_Feedback_Decoder1()
         end
 
         % Decoder
-        if strcmp(mod_type, 'NN')
-            decoded_data = qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
-        else
-            decoded_data = ~qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
-        end
+
+        decoded_data = qamdemod(detected_symbols, mod_order, 'OutputType', 'bit', 'UnitAveragePower', true);
 
         decoded_data = decoded_data(1:end - extra_bits);
 
@@ -150,7 +151,7 @@ function RX_Feedback_Decoder1()
             save("frame_capture.mat", "frame_capture")
 
             if nnz(frame_capture) == no_of_frames
-                fprintf("All frames captured\n");
+                fprintf("\nAll frames captured\n");
                 break;
             end
 
@@ -165,7 +166,7 @@ function st_id = STS_detect(RX, total_no_of_samples, sample_offset)
 
     window_size = 64;
     mean_size = 64;
-    corr_th = 0.32;
+    corr_th = 0.6;
     count_cn = 90;
 
     L = length(RX) - total_no_of_samples;
@@ -185,7 +186,7 @@ function st_id = STS_detect(RX, total_no_of_samples, sample_offset)
 
     for i = 1:length(M)
 
-        if (abs(M(i)) > 0.4 && trigger == 0) || i < sample_offset %546119
+        if (abs(M(i)) > 0.4 && trigger == 0) || i < sample_offset
             continue;
         else
             trigger = 1;

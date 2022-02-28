@@ -36,13 +36,10 @@ args = get_args()
 if args.dev_type == "encoder":
     if args.num == 1:
         eng = matlab.engine.start_matlab()
-
-        # TX Transmission 1
-        eng.TX_Feedback_Encoder1(nargout=0)
-        print('\nPROCESS BEGINS\n')
-        print('TX Encoder 1 generated')
+        eng.RX_Feedback_Encoder1(nargout=0)
+        print("RX Encoder 1 generated")
         cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
+            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
             + str(args.tx_gain)
             + " -file_path "
             + args.tx_filename
@@ -54,14 +51,14 @@ if args.dev_type == "encoder":
             stderr=DEVNULL,
         )
         time.sleep(3)
-        print('TX Transmission 1 starts')
+        print("RX Transmission 1 starts")
 
     elif args.num == 2:
         eng = matlab.engine.start_matlab()
-        eng.TX_Feedback_Encoder2(nargout=0)
-        print('TX Encoder 2 generated')
+        eng.RX_Feedback_Encoder2(nargout=0)
+        print("RX Encoder 2 generated")
         cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
+            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
             + str(args.tx_gain)
             + " -file_path "
             + args.tx_filename
@@ -73,33 +70,20 @@ if args.dev_type == "encoder":
             stderr=DEVNULL,
         )
         time.sleep(3)
-        print('TX Transmission 2 starts')
+        print("RX Transmission 2 started")
     elif args.num == 3:
         eng = matlab.engine.start_matlab()
-        eng.TX_Feedback_Encoder3(nargout=0)
-        print('TX Encoder 2 generated')
-        cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
-            + str(args.tx_gain)
-            + " -file_path "
-            + args.tx_filename
-        )
-        subprocess.Popen(
-            cmd_string,
-            shell=True,
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-        )
-        time.sleep(3)
-        print('TX Transmission 3 starts')
+        print("Final Decoding starts")
+        eng.RX_Feedback_Encoder3(nargout=0)
+        print("\nProcess Ended\n")
     else:
         print("Wrong Option")
 elif args.dev_type == "decoder":
     if args.num == 1:
         eng = matlab.engine.start_matlab()
         N_captures = args.n_captures
-        print("TX Reception 1 starts")
-        eng.frame_capture_1_2(nargout=0)
+        print("RX Reception 1 starts")
+        eng.frame_capture_2_1(nargout=0)
         for i in range(N_captures):
             frame_capture = sio.loadmat("frame_capture.mat")
             frame_capture = frame_capture["frame_capture"]
@@ -107,7 +91,7 @@ elif args.dev_type == "decoder":
                 break
             print("Capture :", i + 1, "...")
             cmd_string = (
-                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_RX.py -rx_gain "
+                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
                 + str(args.rx_gain)
                 + " -file_path "
                 + args.rx_filename
@@ -120,13 +104,13 @@ elif args.dev_type == "decoder":
             )
             time.sleep(3)
             print("Capture done")
-            eng.TX_Feedback_Decoder1(nargout=0)
+            eng.RX_Feedback_Decoder1(nargout=0)
 
     elif args.num == 2:
         eng = matlab.engine.start_matlab()
         N_captures = args.n_captures
-        print("TX Reception 2 starts")
-        eng.frame_capture_1_3(nargout=0)
+        print("RX Reception 2 starts")
+        eng.frame_capture_2_2(nargout=0)
         for i in range(N_captures):
             frame_capture = sio.loadmat("frame_capture.mat")
             frame_capture = frame_capture["frame_capture"]
@@ -134,7 +118,7 @@ elif args.dev_type == "decoder":
                 break
             print("capture :", i + 1, "...")
             cmd_string = (
-                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_RX.py -rx_gain "
+                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
                 + str(args.rx_gain)
                 + " -file_path "
                 + args.rx_filename
@@ -147,6 +131,30 @@ elif args.dev_type == "decoder":
             )
             time.sleep(3)
             print("Capture done")
-            eng.TX_Feedback_Decoder2(nargout=0)
+            eng.RX_Feedback_Decoder2(nargout=0)
 
-    
+    elif args.num == 3:
+        eng = matlab.engine.start_matlab()
+        N_captures = args.n_captures
+        print("RX Reception 3 starts")
+        eng.frame_capture_2_3(nargout=0)
+        for i in range(N_captures):
+            frame_capture = sio.loadmat("frame_capture.mat")
+            frame_capture = frame_capture["frame_capture"]
+            if np.count_nonzero(frame_capture) == len(frame_capture):
+                break
+            print("capture :", i + 1, "...")
+            cmd_string = (
+                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
+                + str(args.rx_gain)
+                + " -file_path "
+                + args.rx_filename
+            )
+            subprocess.Popen(
+                cmd_string,
+                shell=True,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
+            print("Capture done")
+            eng.RX_Feedback_Decoder3(nargout=0)
