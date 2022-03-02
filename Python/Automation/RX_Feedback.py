@@ -34,9 +34,16 @@ def get_args():
 args = get_args()
 
 if args.dev_type == "encoder":
-    if args.num == 1:
-        eng = matlab.engine.start_matlab()
-        eng.RX_Feedback_Encoder1(nargout=0)
+
+    eng = matlab.engine.start_matlab()
+
+    if args.num == 3:
+        print("Final Decoding starts")
+        eng.RX_Feedback_Encoder3(nargout=0)
+        print("\nProcess Ended\n")
+    else:
+
+        eng.RX_Feedback_Encoder(1,nargout=0)
         print("RX Encoder 1 generated")
         cmd_string = (
             "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
@@ -51,17 +58,25 @@ if args.dev_type == "encoder":
             stderr=DEVNULL,
         )
         time.sleep(3)
-        print("RX Transmission 1 starts")
 
-    elif args.num == 2:
-        eng = matlab.engine.start_matlab()
-        eng.RX_Feedback_Encoder2(nargout=0)
-        print("RX Encoder 2 generated")
+        print("RX Transmission" + str(args.num) + " starts")
+elif args.dev_type == "decoder":
+    eng = matlab.engine.start_matlab()
+    N_captures = args.n_captures
+
+    print("RX Reception " + str(args.num) + "1 starts")
+    eng.frame_capture(nargout=0)
+    for i in range(N_captures):
+        frame_capture = sio.loadmat("frame_capture.mat")
+        frame_capture = frame_capture["frame_capture"]
+        if np.count_nonzero(frame_capture) == len(frame_capture):
+            break
+        print("Capture :", i + 1, "...")
         cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
-            + str(args.tx_gain)
+            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
+            + str(args.rx_gain)
             + " -file_path "
-            + args.tx_filename
+            + args.rx_filename
         )
         subprocess.Popen(
             cmd_string,
@@ -70,91 +85,6 @@ if args.dev_type == "encoder":
             stderr=DEVNULL,
         )
         time.sleep(3)
-        print("RX Transmission 2 started")
-    elif args.num == 3:
-        eng = matlab.engine.start_matlab()
-        print("Final Decoding starts")
-        eng.RX_Feedback_Encoder3(nargout=0)
-        print("\nProcess Ended\n")
-    else:
-        print("Wrong Option")
-elif args.dev_type == "decoder":
-    if args.num == 1:
-        eng = matlab.engine.start_matlab()
-        N_captures = args.n_captures
-        print("RX Reception 1 starts")
-        eng.frame_capture_2_1(nargout=0)
-        for i in range(N_captures):
-            frame_capture = sio.loadmat("frame_capture.mat")
-            frame_capture = frame_capture["frame_capture"]
-            if np.count_nonzero(frame_capture) == len(frame_capture):
-                break
-            print("Capture :", i + 1, "...")
-            cmd_string = (
-                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
-                + str(args.rx_gain)
-                + " -file_path "
-                + args.rx_filename
-            )
-            subprocess.Popen(
-                cmd_string,
-                shell=True,
-                stdout=DEVNULL,
-                stderr=DEVNULL,
-            )
-            time.sleep(3)
-            print("Capture done")
-            eng.RX_Feedback_Decoder1(nargout=0)
+        print("Capture done")
+        eng.RX_Feedback_Decoder(args.num,nargout=0)
 
-    elif args.num == 2:
-        eng = matlab.engine.start_matlab()
-        N_captures = args.n_captures
-        print("RX Reception 2 starts")
-        eng.frame_capture_2_2(nargout=0)
-        for i in range(N_captures):
-            frame_capture = sio.loadmat("frame_capture.mat")
-            frame_capture = frame_capture["frame_capture"]
-            if np.count_nonzero(frame_capture) == len(frame_capture):
-                break
-            print("capture :", i + 1, "...")
-            cmd_string = (
-                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
-                + str(args.rx_gain)
-                + " -file_path "
-                + args.rx_filename
-            )
-            subprocess.Popen(
-                cmd_string,
-                shell=True,
-                stdout=DEVNULL,
-                stderr=DEVNULL,
-            )
-            time.sleep(3)
-            print("Capture done")
-            eng.RX_Feedback_Decoder2(nargout=0)
-
-    elif args.num == 3:
-        eng = matlab.engine.start_matlab()
-        N_captures = args.n_captures
-        print("RX Reception 3 starts")
-        eng.frame_capture_2_3(nargout=0)
-        for i in range(N_captures):
-            frame_capture = sio.loadmat("frame_capture.mat")
-            frame_capture = frame_capture["frame_capture"]
-            if np.count_nonzero(frame_capture) == len(frame_capture):
-                break
-            print("capture :", i + 1, "...")
-            cmd_string = (
-                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
-                + str(args.rx_gain)
-                + " -file_path "
-                + args.rx_filename
-            )
-            subprocess.Popen(
-                cmd_string,
-                shell=True,
-                stdout=DEVNULL,
-                stderr=DEVNULL,
-            )
-            print("Capture done")
-            eng.RX_Feedback_Decoder3(nargout=0)
