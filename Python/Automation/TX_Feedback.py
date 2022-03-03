@@ -12,7 +12,6 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-dev_type", type=str, default="encoder")
-    parser.add_argument("-dev_type", type=str, default="encoder")
     parser.add_argument("-num", type=int, default=3)
     parser.add_argument("-rx_gain", type=int, default=15)
     parser.add_argument("-tx_gain", type=int, default=15)

@@ -39,11 +39,11 @@ if args.dev_type == "encoder":
 
     if args.num == 3:
         print("Final Decoding starts")
-        eng.RX_Feedback_Encoder3(nargout=0)
+        eng.RX_Feedback_Encoder(args.num, nargout=0)
         print("\nProcess Ended\n")
     else:
 
-        eng.RX_Feedback_Encoder(1,nargout=0)
+        eng.RX_Feedback_Encoder(args.num ,nargout=0)
         print("RX Encoder 1 generated")
         cmd_string = (
             "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "

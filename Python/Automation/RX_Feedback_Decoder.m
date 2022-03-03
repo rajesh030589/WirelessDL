@@ -172,7 +172,7 @@ for n_detect = 1:length(st_id_list)
         fprintf("Frame: %d  SNR:  %.2f\n", frame_num, snr_estimate);
     end
     if snr_estimate > 14
-        YL(:, frame_num + 1) = real(detected_symbols_pc);
+        YL(:, frame_num + 1) = real(detected_symbols);
         YH(:, frame_num + 1) = channel_symbols;
         YEQ(:, frame_num + 1) = detected_symbols_pc;
         YUEQ(:, frame_num + 1) = detected_uneq_symbols;

@@ -155,7 +155,7 @@ for n_detect = 1:length(st_id_list)
     fprintf("Frame: %d  SNR:  %.2f\n", frame_num, snr_estimate);
     
     if snr_estimate > 14
-        ZL(:, frame_num + 1) = real(detected_symbols_pc);
+        ZL(:, frame_num + 1) = real(detected_symbols);
         ZH(:, frame_num + 1) = channel_symbols;
         ZEQ(:, frame_num + 1) = detected_symbols_pc;
         ZUEQ(:, frame_num + 1) = detected_uneq_symbols;
