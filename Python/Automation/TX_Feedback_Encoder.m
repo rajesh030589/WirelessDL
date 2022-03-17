@@ -90,7 +90,7 @@ for n_frame = 1:no_of_frames
                     l = l + 1;
                 else
                     
-                    A(j, i) = tx_gain * mod_symbols(k);
+                    A(j, i) =  mod_symbols(k);
                     k = k + 1;
                 end
                 

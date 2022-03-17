@@ -82,3 +82,44 @@ elif args.dev_type == "decoder":
         print("Capture done")
         eng.TX_Feedback_Decoder(args.num, nargout=0)
 
+elif args.dev_type == "encoder_noise":
+    eng = matlab.engine.start_matlab()
+
+    # TX Transmission 1
+    eng.TX_Send_Noise(nargout=0)
+    print('TX Noise generated')
+    cmd_string = (
+        "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
+        + str(args.tx_gain)
+        + " -file_path "
+        + args.tx_filename
+    )
+    subprocess.Popen(
+        cmd_string,
+        shell=True,
+        stdout=DEVNULL,
+        stderr=DEVNULL,
+    )
+    time.sleep(3)
+    print('TX Transmission starts')
+
+elif args.dev_type == "encoder_channel":
+    eng = matlab.engine.start_matlab()
+
+    # TX Transmission 1
+    eng.TX_Send_Channel(nargout=0)
+    print('TX Noise generated')
+    cmd_string = (
+        "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
+        + str(args.tx_gain)
+        + " -file_path "
+        + args.tx_filename
+    )
+    subprocess.Popen(
+        cmd_string,
+        shell=True,
+        stdout=DEVNULL,
+        stderr=DEVNULL,
+    )
+    time.sleep(3)
+    print('TX Transmission starts')

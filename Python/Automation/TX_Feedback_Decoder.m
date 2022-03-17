@@ -24,6 +24,9 @@ try
     
     ZEQ = open(strcat('Feedback_Files/YEQ',num2str(num),'_Output.mat'));
     ZEQ = ZEQ.ZEQ;
+        
+    ZPC = open(strcat('Feedback_Files/YPC',num2str(num),'_Output.mat'));
+    ZPC = ZPC.ZPC;
     
     ZUEQ = open(strcat('Feedback_Files/YUEQ',num2str(num),'_Output.mat'));
     ZUEQ = ZUEQ.ZUEQ;
@@ -33,6 +36,7 @@ catch
     ZL = zeros(total_msg_symbols, no_of_frames);
     ZH = zeros(total_msg_symbols, no_of_frames);
     ZEQ = zeros(total_msg_symbols, no_of_frames);
+    ZPC = zeros(total_msg_symbols, no_of_frames);
     ZUEQ = zeros(total_msg_symbols, no_of_frames);
 end
 
@@ -157,7 +161,8 @@ for n_detect = 1:length(st_id_list)
     if snr_estimate > 14
         ZL(:, frame_num + 1) = real(detected_symbols);
         ZH(:, frame_num + 1) = channel_symbols;
-        ZEQ(:, frame_num + 1) = detected_symbols_pc;
+        ZEQ(:, frame_num + 1) = detected_symbols;
+        ZPC(:, frame_num + 1) = detected_symbols_pc;
         ZUEQ(:, frame_num + 1) = detected_uneq_symbols;
         frame_capture(frame_num + 1, 1) = 1;
         save("frame_capture.mat", "frame_capture")
@@ -175,6 +180,7 @@ end
 save(strcat('Feedback_Files/Z',num2str(num),'_Output.mat'),'ZL');
 save(strcat('Feedback_Files/ZH',num2str(num),'_Output.mat'),'ZH');
 save(strcat('Feedback_Files/ZEQ',num2str(num),'_Output.mat'),'ZEQ');
+save(strcat('Feedback_Files/ZPC',num2str(num),'_Output.mat'),'ZPC');
 save(strcat('Feedback_Files/ZUEQ',num2str(num),'_Output.mat'),'ZUEQ');
 end
 
