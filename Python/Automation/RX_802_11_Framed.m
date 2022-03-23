@@ -105,7 +105,7 @@ function RX_802_11_Framed()
 
         % SNR Estimate
         h = abs(ifft(fftshift(H)));
-        snr_estimate = 20 * log10(abs(h(1))) - 20 * log10(mean(abs(h(10:end))));
+        snr_estimate = 20 * log10(abs(h(1))) - 20 * log10(mean(abs(h(10:end-10))));
 
         % Frame Detection
         demod_first_symbol = qamdemod(detected_signal_symbols, 2, 'OutputType', 'bit', 'UnitAveragePower', true);
