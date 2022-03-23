@@ -16,6 +16,7 @@ def get_args():
     parser.add_argument("-rx_gain", type=int, default=15)
     parser.add_argument("-tx_gain", type=int, default=15)
     parser.add_argument("-n_captures", type=int, default=3)
+    parser.add_argument("-fdbk", type=str, default="noisy")
     parser.add_argument(
         "-rx_filename",
         type=str,
@@ -56,31 +57,39 @@ if args.dev_type == "encoder":
     print('TX Transmission 1 starts')
 
 elif args.dev_type == "decoder":
+
+
     eng = matlab.engine.start_matlab()
-    N_captures = args.n_captures
-    print("TX Reception 1 starts")
-    eng.frame_capture(nargout=0)
-    for i in range(N_captures):
-        frame_capture = sio.loadmat("frame_capture.mat")
-        frame_capture = frame_capture["frame_capture"]
-        if np.count_nonzero(frame_capture) == len(frame_capture):
-            break
-        print("Capture :", i + 1, "...")
-        cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_RX.py -rx_gain "
-            + str(args.rx_gain)
-            + " -file_path "
-            + args.rx_filename
-        )
-        subprocess.Popen(
-            cmd_string,
-            shell=True,
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-        )
-        time.sleep(3)
-        print("Capture done")
-        eng.TX_Feedback_Decoder(args.num, nargout=0)
+
+    if args.fdbk == "noisy":
+        N_captures = args.n_captures
+        print("TX Reception 1 starts")
+        eng.frame_capture(nargout=0)
+        for i in range(N_captures):
+            frame_capture = sio.loadmat("frame_capture.mat")
+            frame_capture = frame_capture["frame_capture"]
+            if np.count_nonzero(frame_capture) == len(frame_capture):
+                break
+            print("Capture :", i + 1, "...")
+            cmd_string = (
+                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_RX.py -rx_gain "
+                + str(args.rx_gain)
+                + " -file_path "
+                + args.rx_filename
+            )
+            subprocess.Popen(
+                cmd_string,
+                shell=True,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
+            time.sleep(3)
+            print("Capture done")
+            eng.TX_Feedback_Decoder(args.num, nargout=0)
+
+    else:
+        eng.TX_Feedback_Noiseless(args.num, nargout=0)
+        print('Noiseless feedback received at TX')
 
 elif args.dev_type == "encoder_noise":
     eng = matlab.engine.start_matlab()

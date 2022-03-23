@@ -2,7 +2,7 @@ function RX_Feedback_Encoder(num)
 clc;
 
 if nargin< 1
-    num = 1;
+    num = 3;
 end
 currentFolder = pwd;
 addpath(strcat(currentFolder, '/Imp_Files'));

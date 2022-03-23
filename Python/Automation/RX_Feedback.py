@@ -16,6 +16,7 @@ def get_args():
     parser.add_argument("-rx_gain", type=int, default=15)
     parser.add_argument("-tx_gain", type=int, default=15)
     parser.add_argument("-n_captures", type=int, default=3)
+    parser.add_argument("-fdbk", type=str, default="noisy")
     parser.add_argument(
         "-rx_filename",
         type=str,
@@ -45,21 +46,24 @@ if args.dev_type == "encoder":
 
         eng.RX_Feedback_Encoder(args.num ,nargout=0)
         print("RX Encoder 1 generated")
-        cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
-            + str(args.tx_gain)
-            + " -file_path "
-            + args.tx_filename
-        )
-        subprocess.Popen(
-            cmd_string,
-            shell=True,
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-        )
+        if args.fdbk == "noisy":
+            cmd_string = (
+                "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_TX.py -tx_gain "
+                + str(args.tx_gain)
+                + " -file_path "
+                + args.tx_filename
+            )
+            subprocess.Popen(
+                cmd_string,
+                shell=True,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
+            print("RX Transmission" + str(args.num) + " starts")
+        else:
+            print("noiseless output")
         time.sleep(3)
 
-        print("RX Transmission" + str(args.num) + " starts")
 elif args.dev_type == "decoder":
     eng = matlab.engine.start_matlab()
     N_captures = args.n_captures
