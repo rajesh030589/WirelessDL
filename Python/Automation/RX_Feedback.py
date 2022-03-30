@@ -8,6 +8,7 @@ import subprocess
 from asyncio.subprocess import DEVNULL
 import os
 
+
 def get_args():
     parser = argparse.ArgumentParser()
 
@@ -44,7 +45,7 @@ if args.dev_type == "encoder":
         print("\nProcess Ended\n")
     else:
 
-        eng.RX_Feedback_Encoder(args.num ,nargout=0)
+        eng.RX_Feedback_Encoder(args.num, nargout=0)
         print("RX Encoder 1 generated")
         if args.fdbk == "noisy":
             cmd_string = (
@@ -90,37 +91,18 @@ elif args.dev_type == "decoder":
         )
         time.sleep(3)
         print("Capture done")
-        eng.RX_Feedback_Decoder(args.num,nargout=0)
+        eng.RX_Feedback_Decoder(args.num, nargout=0)
 elif args.dev_type == "decoder_noise":
     eng = matlab.engine.start_matlab()
     N_captures = args.n_captures
-
-    print("RX Reception " + str(args.num) + "1 starts")
-
-    for i in range(N_captures):
-        print("Capture :", i + 1, "...")
-        cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
-            + str(args.rx_gain)
-            + " -file_path "
-            + args.rx_filename
+    if os.path.exists(
+        "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Channel_Files/Noise_Output.mat"
+    ):
+        os.remove(
+            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Channel_Files/Noise_Output.mat"
         )
-        subprocess.Popen(
-            cmd_string,
-            shell=True,
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-        )
-        time.sleep(3)
-        print("Capture done")
-        eng.RX_Measure_Noise(nargout=0)
-elif args.dev_type == "decoder_noise":
-    eng = matlab.engine.start_matlab()
-    N_captures = args.n_captures
-    if os.path.exists("/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Feedback_Files/Noise_Output.mat"):
-        os.remove("/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Feedback_Files/Noise_Output.mat")
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
     print("RX Reception " + str(args.num) + "1 starts")
     for i in range(N_captures):
@@ -140,14 +122,19 @@ elif args.dev_type == "decoder_noise":
         time.sleep(3)
         print("Capture done")
         eng.RX_Measure_Noise(nargout=0)
+
 
 elif args.dev_type == "decoder_channel":
     eng = matlab.engine.start_matlab()
     N_captures = args.n_captures
-    if os.path.exists("/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Feedback_Files/Channel_Output.mat"):
-        os.remove("/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Feedback_Files/Channel_Output.mat")
+    if os.path.exists(
+        "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Channel_Files/Channel_Output.mat"
+    ):
+        os.remove(
+            "/home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Channel_Files/Channel_Output.mat"
+        )
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
     print("RX Reception " + str(args.num) + "1 starts")
     for i in range(N_captures):
@@ -167,4 +154,3 @@ elif args.dev_type == "decoder_channel":
         time.sleep(3)
         print("Capture done")
         eng.RX_Measure_Channel(nargout=0)
-

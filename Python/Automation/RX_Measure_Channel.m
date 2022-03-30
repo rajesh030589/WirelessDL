@@ -16,7 +16,7 @@ st_id_list = STS_detect(RX, total_no_of_samples, sample_offset);
 
 
 try   
-    Channel = open(strcat('Feedback_Files/Channel_Output.mat'));
+    Channel = open(strcat('Channel_Files/Channel_Output.mat'));
     Channel = Channel.Channel;
 catch
     Channel = [];

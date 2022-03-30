@@ -17,6 +17,7 @@ def get_args():
     parser.add_argument("-tx_gain", type=int, default=15)
     parser.add_argument("-n_captures", type=int, default=3)
     parser.add_argument("-fdbk", type=str, default="noisy")
+    parser.add_argument("-scale", type=float, default=10.0)
     parser.add_argument(
         "-rx_filename",
         type=str,
@@ -38,9 +39,11 @@ if args.dev_type == "encoder":
     eng = matlab.engine.start_matlab()
 
     # TX Transmission 1
-    eng.TX_Feedback_Encoder(args.num,nargout=0)
-    print('\nPROCESS BEGINS\n')
-    print('TX Encoder 1 generated')
+    eng.TX_Feedback_Encoder(args.num, args.scale, nargout=0)
+    if args.num == 1:
+        print("\nPROCESS BEGINS\n")
+
+    print("TX Encoder " + str(args.num) + " generated")
     cmd_string = (
         "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
         + str(args.tx_gain)
@@ -54,10 +57,9 @@ if args.dev_type == "encoder":
         stderr=DEVNULL,
     )
     time.sleep(3)
-    print('TX Transmission 1 starts')
+    print("TX Transmission " + str(args.num) + " starts")
 
 elif args.dev_type == "decoder":
-
 
     eng = matlab.engine.start_matlab()
 
@@ -89,14 +91,14 @@ elif args.dev_type == "decoder":
 
     else:
         eng.TX_Feedback_Noiseless(args.num, nargout=0)
-        print('Noiseless feedback received at TX')
+        print("Noiseless feedback received at TX")
 
 elif args.dev_type == "encoder_noise":
     eng = matlab.engine.start_matlab()
 
     # TX Transmission 1
     eng.TX_Send_Noise(nargout=0)
-    print('TX Noise generated')
+    print("TX Noise generated")
     cmd_string = (
         "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
         + str(args.tx_gain)
@@ -110,14 +112,14 @@ elif args.dev_type == "encoder_noise":
         stderr=DEVNULL,
     )
     time.sleep(3)
-    print('TX Transmission starts')
+    print("TX Transmission starts")
 
 elif args.dev_type == "encoder_channel":
     eng = matlab.engine.start_matlab()
 
     # TX Transmission 1
     eng.TX_Send_Channel(nargout=0)
-    print('TX Noise generated')
+    print("TX Noise generated")
     cmd_string = (
         "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/TX_flow_graph_TX.py -tx_gain "
         + str(args.tx_gain)
@@ -131,4 +133,4 @@ elif args.dev_type == "encoder_channel":
         stderr=DEVNULL,
     )
     time.sleep(3)
-    print('TX Transmission starts')
+    print("TX Transmission starts")

@@ -1,8 +1,7 @@
-
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 no_of_frames = 1;
-no_of_ofdm_symbols_per_frame = 2000;
+no_of_ofdm_symbols_per_frame = 3600;
 no_signal_symbols = 1;
 total_ofdm_symbols_per_frame = no_of_ofdm_symbols_per_frame + no_signal_symbols;
 size_of_FFT = 64;
