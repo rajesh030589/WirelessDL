@@ -136,7 +136,7 @@ for n_detect = 1:length(st_id_list)
     
 end
 
-save(strcat('Feedback_Files/Channel_Output.mat'),'Channel');
+save(strcat('Channel_Files/Channel_Output.mat'),'Channel');
 
 end
 
