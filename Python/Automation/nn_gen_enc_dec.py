@@ -223,7 +223,7 @@ device = torch.device("cuda" if use_cuda else "cpu")
 
 ##AE
 ae_model = AE(args).to(device)
-ae_weights = torch.load("./ric_no_trainable_weights.pt")
+ae_weights = torch.load("./nn_noiseless_model.pt")
 ae_model.load_state_dict(ae_weights)
 ae_model.args = args
 
@@ -243,8 +243,8 @@ dec_model.dec_output = ae_model.dec_output
 
 
 ##save the models
-torch.save(enc_model.state_dict(), "./encoder.pt")
-torch.save(dec_model.state_dict(), "./decoder.pt")
+torch.save(enc_model.state_dict(), "./Imp_Functions/encoder_fading.pt")
+torch.save(dec_model.state_dict(), "./Imp_Functions/decoder_fading.pt")
 
 
 # ##test

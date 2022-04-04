@@ -78,7 +78,7 @@ def run_scheme(alpha):
     return BER1, BER2
 
 
-alpha_list = np.linspace(15, 3, 20)
+alpha_list = np.linspace(18, 6, 7, endpoint=True)
 BER = np.zeros((len(alpha_list), 2))
 
 for i in range(len(alpha_list)):

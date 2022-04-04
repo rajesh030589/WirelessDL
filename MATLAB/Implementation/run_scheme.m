@@ -1,4 +1,4 @@
-function [BER1, BER2] = run_scheme(alpha)
+function BER1 = run_scheme(alpha)
 
 L = 200000;
 
@@ -10,74 +10,25 @@ save(strcat('Data_Files/TX_Encoded', num2str(1), '.mat'), 'encoder_data');
 system(strcat('python3 /home/rajesh/ActiveFeedback/WirelessDL/MATLAB/Implementation/Imp_Functions/TX_NN_Encoder', num2str(1), '.py'));
 mod_symbols = open(strcat('Data_Files/TX_Modulated', num2str(1), '.mat'));
 C1 = double(mod_symbols.output);
+
 [H1, N1] = gen_fading_noise(L);
-
 Y1 = alpha*C1 .* H1 + N1;
+d1 = (Y1 < 0);
 
-decoded_data = (Y1 < 0);
+[H1, N1] = gen_fading_noise(L);
+Y1 = alpha*C1 .* H1 + N1;
+d2 = (Y1 < 0);
+
+[H1, N1] = gen_fading_noise(L);
+Y1 = alpha*C1 .* H1 + N1;
+d3 = (Y1 < 0);
+
+decoded_data = ((d1 + d2 + d3) > 1.5);
+
 data_to_encode = D;
 
 BER1 = biterr(decoded_data, data_to_encode) / L;
 
-
-%-----------------------------------------------------------------------------------------%
-
-encoder_data = Y1;
-save(strcat('Data_Files/RX_Encoded', num2str(1), '.mat'), 'encoder_data');
-system(strcat('python3 Imp_Functions/RX_NN_Encoder', num2str(1), '.py'));
-mod_symbols = open(strcat('Data_Files/RX_Modulated', num2str(1), '.mat'));
-B1 = double(mod_symbols.output);
-
-Z1 = B1;
-
-%------------------------------------------------------------------------------------------%
-
-encoder_data = cat(2, D, Z1);
-
-save(strcat('Data_Files/TX_Encoded', num2str(2), '.mat'), 'encoder_data');
-system(strcat('python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Imp_Functions/TX_NN_Encoder', num2str(2), '.py'));
-mod_symbols = open(strcat('Data_Files/TX_Modulated', num2str(2), '.mat'));
-C2 = double(mod_symbols.output);
-[H2, N2] = gen_fading_noise(L);
-
-Y2 = alpha*C2 .* H2 + N2;
-
-
-%---------------------------------------------------------------------------------------------%
-
-encoder_data = Y2;
-save(strcat('Data_Files/RX_Encoded', num2str(2), '.mat'), 'encoder_data');
-system(strcat('python3 Imp_Functions/RX_NN_Encoder', num2str(2), '.py'));
-mod_symbols = open(strcat('Data_Files/RX_Modulated', num2str(2), '.mat'));
-
-B2 = double(mod_symbols.output);
-
-Z2 = B2;
-
-%-----------------------------------------------------------------------------------------------%
-encoder_data = cat(2, D, Z1, Z2);
-save(strcat('Data_Files/TX_Encoded', num2str(3), '.mat'), 'encoder_data');
-system(strcat('python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/Imp_Functions/TX_NN_Encoder', num2str(3), '.py'));
-mod_symbols = open(strcat('Data_Files/TX_Modulated', num2str(3), '.mat'));
-
-C3 = double(mod_symbols.output);
-
-[H3, N3] = gen_fading_noise(L);
-
-Y3 = alpha*C3 .* H3 + N3;
-
-
-%---------------------------------------------------------------------------------------------------------------%
-
-encoder_data = Y3;
-save(strcat('Data_Files/RX_Encoded',num2str(3),'.mat'), 'encoder_data');
-system(strcat('python3 Imp_Functions/RX_NN_Encoder',num2str(3),'.py'));
-mod_symbols = open(strcat('Data_Files/RX_Modulated',num2str(3),'.mat'));
-B3 = double(mod_symbols.output);
-
-decoded_data = (B3 > 0.5);
-data_to_encode = D;
-BER2 = biterr(decoded_data, data_to_encode) / L;
 
 end
 function [H, Noise] = gen_fading_noise(N)

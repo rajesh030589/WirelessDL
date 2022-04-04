@@ -4,25 +4,17 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 
 
-def gen_rician_examples(data_shape, type):
-
-    fwd_fading_stats = sio.loadmat("Channel_Files/Forward_Channel.mat")
-    fwd_fading_stats = fwd_stats["Forward_Channel"]
-    fwd_stats = torch.tensor(fwd_stats)
-
-    fdb_fading_stats = sio.loadmat("Channel_Files/Backward_Channel.mat")
-    fdb_fading_stats = fdb_stats["Forward_Channel"]
-    fdb_stats = torch.tensor(fdb_stats)
+def gen_rician_examples(data_shape, type, alpha):
 
     rand_subc = torch.randint(high=48, size=data_shape)
+
+    fwd_fading_stats = sio.loadmat("Channel_Files/Forward_Channel.mat")
+    fwd_fading_stats = fwd_fading_stats["Forward_Channel"]
+    fwd_fading_stats = torch.tensor(fwd_fading_stats)
 
     K = fwd_fading_stats[rand_subc, 0]
     A = fwd_fading_stats[rand_subc, 1]
     fwd_fading = gen_fading(data_shape, type, K, A)
-
-    K = fdb_fading_stats[rand_subc, 0]
-    A = fdb_fading_stats[rand_subc, 1]
-    fdb_fading = gen_fading(data_shape, type, K, A)
 
     # Assuming phase information at the receiver
     fwd_noise_stats = sio.loadmat("Channel_Files/Forward_Noise.mat")
@@ -33,16 +25,8 @@ def gen_rician_examples(data_shape, type):
     var = fwd_noise_stats[rand_subc, 1]
     fwd_noise = gen_noise(data_shape, mean, var)
 
-    fdb_noise_stats = sio.loadmat("Channel_Files/Backward_Noise.mat")
-    fdb_noise_stats = fdb_noise_stats["Backward_Noise"]
-    fdb_noise_stats = torch.tensor(fwd_noise_stats)
-
-    mean = fdb_noise_stats[rand_subc, 0]
-    var = fdb_noise_stats[rand_subc, 1]
-    fdb_noise = gen_noise(data_shape, mean, var)
-
     # Assuming phase information at the receiver
-    return fwd_fading, fdb_fading, fwd_noise, fdb_noise
+    return alpha * fwd_fading, fwd_noise
 
 
 def gen_noise(data_shape, mean, var):
@@ -78,6 +62,3 @@ def gen_fading(data_shape, type, K, A):
         hNLOSReal, hNLOSImag
     )
     return A * fading_h
-
-
-# plt.savefig('example2.png')
