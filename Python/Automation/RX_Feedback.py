@@ -180,7 +180,7 @@ elif args.dev_type == "decoder_channel":
     for i in range(N_captures):
         print("Capture :", i + 1, "...")
         cmd_string = (
-            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -rx_gain "
+            "python3 /home/rajesh/ActiveFeedback/WirelessDL/Python/Automation/RX_flow_graph_RX.py -nsamples 10000000 -rx_gain "
             + str(args.rx_gain)
             + " -file_path "
             + args.rx_filename

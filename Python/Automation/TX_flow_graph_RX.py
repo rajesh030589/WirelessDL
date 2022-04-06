@@ -27,6 +27,7 @@ import pathlib
 def get_args():
     parser = ArgumentParser()
     parser.add_argument("-rx_gain", type=int, default=10)
+    parser.add_argument("-nsamples", type=int, default=3000000)
     parser.add_argument(
         "-file_path",
         type=str,
@@ -47,6 +48,7 @@ class fm_block(gr.top_block):
         self.samp_rate = samp_rate = 10e6
         self.rx_gain = rx_gain = args.rx_gain
         self.freq = freq = 2.2e9
+        self.nsamples = nsamples = args.nsamples
 
         ##################################################
         # Blocks
@@ -67,7 +69,7 @@ class fm_block(gr.top_block):
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
         self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
-        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, 3000000)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex * 1, nsamples)
         self.blocks_file_sink_0 = blocks.file_sink(
             gr.sizeof_gr_complex * 1,
             args.file_path,

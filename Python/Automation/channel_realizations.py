@@ -4,15 +4,15 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 
 
-def gen_rician_examples(data_shape, type):
+def gen_rician_examples(data_shape, type, alpha):
 
     fwd_fading_stats = sio.loadmat("Channel_Files/Forward_Channel.mat")
-    fwd_fading_stats = fwd_stats["Forward_Channel"]
-    fwd_stats = torch.tensor(fwd_stats)
+    fwd_fading_stats = fwd_fading_stats["Channel"]
+    fwd_fading_stats = torch.tensor(fwd_fading_stats)
 
     fdb_fading_stats = sio.loadmat("Channel_Files/Backward_Channel.mat")
-    fdb_fading_stats = fdb_stats["Forward_Channel"]
-    fdb_stats = torch.tensor(fdb_stats)
+    fdb_fading_stats = fdb_fading_stats["Channel"]
+    fdb_fading_stats = torch.tensor(fdb_fading_stats)
 
     rand_subc = torch.randint(high=48, size=data_shape)
 
@@ -26,7 +26,7 @@ def gen_rician_examples(data_shape, type):
 
     # Assuming phase information at the receiver
     fwd_noise_stats = sio.loadmat("Channel_Files/Forward_Noise.mat")
-    fwd_noise_stats = fwd_noise_stats["Forward_Noise"]
+    fwd_noise_stats = fwd_noise_stats["Noise"]
     fwd_noise_stats = torch.tensor(fwd_noise_stats)
 
     mean = fwd_noise_stats[rand_subc, 0]
@@ -34,7 +34,7 @@ def gen_rician_examples(data_shape, type):
     fwd_noise = gen_noise(data_shape, mean, var)
 
     fdb_noise_stats = sio.loadmat("Channel_Files/Backward_Noise.mat")
-    fdb_noise_stats = fdb_noise_stats["Backward_Noise"]
+    fdb_noise_stats = fdb_noise_stats["Noise"]
     fdb_noise_stats = torch.tensor(fwd_noise_stats)
 
     mean = fdb_noise_stats[rand_subc, 0]
@@ -42,7 +42,7 @@ def gen_rician_examples(data_shape, type):
     fdb_noise = gen_noise(data_shape, mean, var)
 
     # Assuming phase information at the receiver
-    return fwd_fading, fdb_fading, fwd_noise, fdb_noise
+    return alpha * fwd_fading, fdb_fading, fwd_noise, fdb_noise
 
 
 def gen_noise(data_shape, mean, var):
@@ -74,8 +74,8 @@ def gen_fading(data_shape, type, K, A):
         hNLOSImag = torch.randn((data_shape[0], 1, 1)).repeat(
             1, data_shape[1], data_shape[2]
         )
-    fading_h = coeffLOS * torch.complex(hLOSReal, hLOSImag) + coeffNLOS * torch.complex(
-        hNLOSReal, hNLOSImag
+    fading_h = torch.abs(coeffLOS * torch.complex(hLOSReal, hLOSImag) + coeffNLOS * torch.complex(
+        hNLOSReal, hNLOSImag)
     )
     return A * fading_h
 

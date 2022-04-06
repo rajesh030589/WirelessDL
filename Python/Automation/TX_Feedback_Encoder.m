@@ -134,6 +134,10 @@ function TX_Feedback_Encoder(num, scale)
         % Concatenate the lts and sts to the transmit data
         TX = [sts(1:end - 1); sts(end) + lts(1); lts(2:end - 1); lts(end) + TX(1); TX(2:end)];
 
+        tx_scale = .8 / max(max(real(TX), imag(TX)));
+        TX = tx_scale .* TX;
+
+        save('Feedback_Files/tx_scale.mat', 'tx_scale');
         % Frame Data
         TX_Out(:, n_frame) = TX;
 

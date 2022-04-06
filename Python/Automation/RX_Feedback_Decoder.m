@@ -12,7 +12,9 @@ function RX_Feedback_Decoder(num)
 
     % Extraction of the received data
     RX = read_complex_binary('RX.bin');
-
+    tx_scale = load('Feedback_Files/tx_scale.mat', 'tx_scale');
+    tx_scale = tx_scale.tx_scale;
+    RX = RX ./ tx_scale;
     % Packet Detection
 
     % STS Packet Detection
