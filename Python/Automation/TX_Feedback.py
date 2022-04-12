@@ -18,7 +18,7 @@ def get_args():
     parser.add_argument("-tx_gain", type=int, default=15)
     parser.add_argument("-n_captures", type=int, default=3)
     parser.add_argument("-fdbk", type=str, default="noisy")
-    parser.add_argument("-scale", type=float, default=10.0)
+    parser.add_argument("-scale", type=float, default=0.0)
     parser.add_argument(
         "-rx_filename",
         type=str,

@@ -8,8 +8,8 @@ import time
 import subprocess
 import matplotlib.pyplot as plt
 
-forward_tx_gain = 5
-forward_rx_gain = 12
+forward_tx_gain = 2
+forward_rx_gain = 30
 backward_tx_gain = 10
 backward_rx_gain = 15
 
@@ -26,24 +26,29 @@ def run_scheme(alpha):
     subprocess.call(
         string1 + " -dev_type encoder -num 1 -scale " + str(alpha), shell=True
     )
+    time.sleep(5)
     subprocess.call(string2 + " -dev_type decoder -num 1", shell=True)
     subprocess.call("python3 flowgraph_process_kill.py", shell=True)
 
     subprocess.call(string4 + " -dev_type encoder -num 1 -fdbk noiseless", shell=True)
     subprocess.call(string3 + " -dev_type decoder -num 1 -fdbk noiseless", shell=True)
 
+    time.sleep(5)
     subprocess.call(
         string1 + " -dev_type encoder -num 2 -scale " + str(alpha), shell=True
     )
+    time.sleep(5)
     subprocess.call(string2 + " -dev_type decoder -num 2", shell=True)
     subprocess.call("python3 flowgraph_process_kill.py", shell=True)
 
     subprocess.call(string4 + " -dev_type encoder -num 2 -fdbk noiseless", shell=True)
     subprocess.call(string3 + " -dev_type decoder -num 2 -fdbk noiseless", shell=True)
 
+    time.sleep(5)
     subprocess.call(
         string1 + " -dev_type encoder -num 3 -scale " + str(alpha), shell=True
     )
+    time.sleep(5)
     subprocess.call(string2 + " -dev_type decoder -num 3", shell=True)
     subprocess.call("python3 flowgraph_process_kill.py", shell=True)
 
@@ -78,7 +83,8 @@ def run_scheme(alpha):
     return BER1, BER2
 
 
-alpha_list = np.linspace(18, 6, 7, endpoint=True)
+alpha_list = np.linspace(1, 20, 20, endpoint=True)
+# alpha_list = [2]
 BER = np.zeros((len(alpha_list), 2))
 
 for i in range(len(alpha_list)):
@@ -89,6 +95,12 @@ for i in range(len(alpha_list)):
     BER[i, 0] = BER1
     BER[i, 1] = BER2
 
-a = np.random.randint(0, 100000)
 Data = {"BER": BER, "Alpha": alpha_list}
-sio.savemat("Datasets/Data_" + str(a) + ".mat", Data)
+
+id = "FEEDBACK_OTA_CODE_RATE_3"
+import time
+
+timestr = time.strftime("%Y%m%d-%H%M%S")
+file_name = "Datasets/Dataset_" + str(id) + "_" + timestr
+
+sio.savemat(file_name + ".mat", Data)

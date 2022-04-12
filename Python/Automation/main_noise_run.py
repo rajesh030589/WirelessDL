@@ -8,8 +8,8 @@ import time
 import subprocess
 import matplotlib.pyplot as plt
 
-forward_tx_gain = 5
-forward_rx_gain = 10
+forward_tx_gain = 2
+forward_rx_gain = 30
 
 
 string1 = "python3 TX_Feedback.py -tx_gain " + str(forward_tx_gain)

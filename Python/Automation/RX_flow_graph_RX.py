@@ -47,7 +47,7 @@ class fm_block(gr.top_block):
         ##################################################
         self.samp_rate = samp_rate = 10e6
         self.rx_gain = rx_gain = args.rx_gain
-        self.freq = freq = 2.2e9
+        self.freq = freq = 2.3e9
         self.nsamples = nsamples = args.nsamples
         print(nsamples)
         ##################################################

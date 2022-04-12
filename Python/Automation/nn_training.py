@@ -322,7 +322,7 @@ class AE(torch.nn.Module):
 ###### MAIN
 args = get_args()
 print(args)
-alpha = 0.1
+alpha = 0.2
 
 
 def errors_ber(y_true, y_pred):

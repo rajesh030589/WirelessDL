@@ -29,11 +29,11 @@ function channel_fit()
             %         grid on;
 
             pd = fitdist(C, 'Rician');
-%                         HH = random(pd, 10000, 1);
-%                         figure;
-%                         hold on;
-%                         histogram(HH,50,'Normalization', 'pdf');
-%                         histogram(C,50,'Normalization', 'pdf');
+                        HH = random(pd, 10000, 1);
+                        figure;
+                        hold on;
+                        histogram(HH,50,'Normalization', 'pdf');
+                        histogram(C,50,'Normalization', 'pdf');
 
             %         figure(h2)
             %         scatter(HH,i*ones(length(HH),1));

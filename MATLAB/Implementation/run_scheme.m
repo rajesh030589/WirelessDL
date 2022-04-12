@@ -1,4 +1,4 @@
-function BER1 = run_scheme(alpha)
+function [BER1,BER2] = run_scheme(alpha)
 
 L = 200000;
 
@@ -29,7 +29,7 @@ data_to_encode = D;
 
 BER1 = biterr(decoded_data, data_to_encode) / L;
 
-
+BER2 = biterr(d1, data_to_encode) / L;
 end
 function [H, Noise] = gen_fading_noise(N)
     fwd_stats = open('Channel_Files/Forward_Channel.mat');

@@ -69,7 +69,7 @@ function TX_Send_Noise()
                         l = l + 1;
                     else
 
-                        A(j, i) = 0.15 * mod_symbols(k);
+                        A(j, i) = 0.05 * mod_symbols(k);
                         k = k + 1;
                     end
 
